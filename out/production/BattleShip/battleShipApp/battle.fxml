@@ -9,10 +9,10 @@
          <children>
             <HBox>
                <children>
-                  <Rectangle fx:id="cell" arcHeight="5.0" arcWidth="5.0" fill="#399efc" height="30.0" onMouseClicked="#cellShoot" stroke="BLACK" strokeType="INSIDE" width="30.0" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="30.0" stroke="BLACK" strokeType="INSIDE" width="30.0" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="30.0" layoutX="10.0" layoutY="10.0" stroke="BLACK" strokeType="INSIDE" width="30.0" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="30.0" layoutX="40.0" layoutY="10.0" stroke="BLACK" strokeType="INSIDE" width="30.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#399efc" height="30.0" onMouseClicked="#cellShoot" stroke="#da0000" strokeType="INSIDE" width="30.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="30.0" onMouseClicked="#cellShoot" stroke="BLACK" strokeType="INSIDE" width="30.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="30.0" layoutX="10.0" layoutY="10.0" onMouseClicked="#cellShoot" stroke="BLACK" strokeType="INSIDE" width="30.0" />
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="30.0" layoutX="40.0" layoutY="10.0" onMouseClicked="#cellShoot" stroke="BLACK" strokeType="INSIDE" width="30.0" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="30.0" layoutX="40.0" layoutY="10.0" stroke="BLACK" strokeType="INSIDE" width="30.0" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="30.0" layoutX="70.0" layoutY="10.0" stroke="BLACK" strokeType="INSIDE" width="30.0" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="30.0" layoutX="70.0" layoutY="10.0" stroke="BLACK" strokeType="INSIDE" width="30.0" />

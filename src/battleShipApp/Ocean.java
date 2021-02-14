@@ -168,7 +168,7 @@ public class Ocean extends Parent {
             setStroke(Color.BLACK);
         }
 
-        public void shoot() {
+        public boolean shoot() {
             wasShot = true;
             setFill(Color.BLACK);
 
@@ -181,10 +181,10 @@ public class Ocean extends Parent {
                     shipsAlive --;
                     shipSunk ++;
                 }
-                //return true; //we hit the ship
+                return true; //we hit the ship
             }
 
-            //return false; //miss
+            return false; //miss
         }
     }
 }

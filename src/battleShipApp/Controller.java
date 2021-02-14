@@ -8,10 +8,17 @@ import javafx.scene.shape.Rectangle;
 import battleShipApp.Ocean.Cell;
 
 public class Controller {
-    @FXML Rectangle cell;
+    @FXML Rectangle shot_cell ;
     public void cellShoot(MouseEvent event){
-        Cell cell = (Cell) event.getSource();
-        cell.setFill(Color.web("#ed4b00"));
+        shot_cell = (Rectangle) event.getSource();
+        Cell cell = (Cell) event.getSource(); //the cell that the user clicked to shoot
+        //human plays
+        if (cell.wasShot)
+            return;
+        shot_cell.setFill(Color.web("#000000"));
+        if( cell.shoot())
+            shot_cell.setFill(Color.web("#da0000"));
+
 
     }
 
