@@ -6,45 +6,17 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
 import battleShipApp.Ocean.Cell;
-import java.util.concurrent.TimeUnit;
-
-import static java.lang.Math.max;
-import static java.lang.Math.min;
-
-/*
-public class BattleshipGame extends Application {
-    public static void main(String[] args) { launch(args); }
-    @Override
-    public void start(Stage primaryStage) throws Exception{
-        //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setTitle("Medialab Battleship");
-
-
-
-        Scene scene = new Scene(root, 300, 275)
-        primaryStage.setScene();
-        primaryStage.show();
-    }
-   */
 
 public class BattleshipGame extends Application{
     private Ocean enemyOcean, playerOcean;
-    private boolean enemyTurn;
-    private boolean smart = false;
-    boolean horiz = false;
-    boolean vert = false;
+    private boolean enemyTurn,smart,horiz,vert,random_smart;
     private int row, column, prevr, prevc,left, right, up, down, prevleft,prevright, prevup, prevdown;
     private Random random = new Random();
-    boolean random_smart;
-    int horizMiss, vertMiss = 0;
 
     private Parent createContent(){
         BorderPane root = new BorderPane();
@@ -69,7 +41,6 @@ public class BattleshipGame extends Application{
         //Set the Board with the Oceans
         VBox vbox = new VBox(50, enemyOcean, playerOcean);
         vbox.setAlignment(Pos.CENTER);
-        root.setCenter(vbox);
         //To start the game click the button
         Button btn = new Button("Place ships");
         btn.setOnMouseClicked(event -> {
@@ -77,6 +48,32 @@ public class BattleshipGame extends Application{
             btn.setDisable(true);
         });
         btn.setAlignment(Pos.CENTER);
+
+
+        // Menu “Application”
+        Menu applicationMenu = new Menu("_Application");
+
+        //Menu Items
+        MenuItem start = new MenuItem("Start");
+        start.setOnAction(event -> startGame());
+        applicationMenu.getItems().add(start);
+        applicationMenu.getItems().add(new MenuItem("Load..."));
+        applicationMenu.getItems().add(new SeparatorMenuItem());
+        applicationMenu.getItems().add(new MenuItem("Exit"));
+
+        //Menu “Details”
+        Menu detailsMenu = new Menu("Details");
+
+        //Menu items
+        detailsMenu.getItems().addAll(new MenuItem("Enemy Ships..."), new MenuItem("Player Shots..."), new MenuItem("Enemy Shots..."));
+
+        //Main menu bar
+        MenuBar menubar = new MenuBar();
+        menubar.getMenus().addAll(applicationMenu , detailsMenu);
+
+
+        root.setTop(menubar);
+        root.setCenter(vbox);
         root.setRight(btn);
 
         return root;
@@ -92,28 +89,16 @@ public class BattleshipGame extends Application{
             playerOcean.shipPlacement(user_placements);
             ReadInput.validate(enemy_placements);
             enemyOcean.shipPlacement(enemy_placements);
+            //pick turn
+            int turn = random.nextInt(2);
+            System.out.println(turn);
+            if(turn == 1) {//enemy's turn
+                enemyTurn = true;
+                enemyMove();
+            }
         }
         catch(Exception m){
             System.out.println(m);
-        }
-        //pick turn
-        int turn = random.nextInt(1);
-        System.out.println(turn);
-        if(turn == 1) {//enemy's turn
-            enemyTurn = true;
-            enemyMove();
-        }
-    }
-
-    private void myNeighbors ( Ocean ocean, int row, int column ){
-        //right
-        int left = column;
-        int right = column;
-        while( right < 9 && ocean.getCell(row,right+1).wasShot){
-            right++;
-        }
-        while( left > 0  && ocean.getCell(row, left -1).wasShot){
-            left--;
         }
     }
 
@@ -227,11 +212,7 @@ public class BattleshipGame extends Application{
 
             if (cell.shoot()) { // shoot and hit a ship
                 smart = true;
-                //prevr = row;
-                //prevc = column;
                 left = right = column;
-                //left = min(prevleft, column);
-                //right = max(prevright, column);
                 up = down = row;
                 horiz = vert = random_smart= false;
                 while (right < 9 && playerOcean.getCell(row, right + 1).wasShot && playerOcean.getCell(row, right + 1).ship != null) {
@@ -245,8 +226,6 @@ public class BattleshipGame extends Application{
                     horiz = true;
                     System.out.println("Horizontal");
                 }
-                //prevleft = left;
-                //prevright = right;
                 if (!horiz) {
                     while (up > 0 && playerOcean.getCell(up - 1, column).wasShot && playerOcean.getCell(up - 1, column).ship != null) {
                         up--;
@@ -264,38 +243,21 @@ public class BattleshipGame extends Application{
             else {
                 if (random_smart) {
                     System.out.println("missed but random smart");
-                    smart = true; // peritto
+                    //smart = true; // peritto
                     row = prevr;
                     column = prevc;
                     System.out.println("row " + row + " column "+column);
                 }
                 else if(horiz){
                     System.out.println("missed but horiz");
-                    horizMiss++;
-                    if(horizMiss == 2){
-                        System.out.println("horiz miss 2 ");
-                        smart = false;
-                        horiz = false;
-                    }
-                    else {
-                        smart = true;
-                        left = prevleft;
-                        right = prevright;
-                    }
+                    left = prevleft;
+                    right = prevright;
+
                 }
                 else if(vert){
                     System.out.println("missed but vert");
-                    vertMiss++;
-                    if(vertMiss == 2){
-                        System.out.println("vert miss 2 ");
-                        smart = false;
-                        vert = false;
-                    }
-                    else {
-                        smart = true;
-                        up = prevup;
-                        down = prevdown;
-                    }
+                    up = prevup;
+                    down = prevdown;
                 }
                 else smart = false;
             }
