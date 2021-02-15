@@ -116,9 +116,7 @@ public class BattleshipGame extends Application{
             left--;
         }
     }
-    private int goVertical(int row){
 
-    }
     private void enemyMove() {
         while (enemyTurn) {
             if (smart) {
@@ -131,7 +129,7 @@ public class BattleshipGame extends Application{
                         if(playerOcean.getCell(row,right+1).wasShot){ // trapped in left and right
                             row = random.nextInt(10);
                             column = random.nextInt(10);
-                            horiz = false; // peritto
+                            smart = horiz =  false; // peritto
                             System.out.println("i am trapped so Random pick: row "+row+" column "+column);
                         }
                         else{
@@ -145,7 +143,7 @@ public class BattleshipGame extends Application{
                             row = random.nextInt(10);
                             column = random.nextInt(10);
                             System.out.println("i am trapped so Random pick: row "+row+" column "+column);
-                            horiz = false;//peritto
+                            smart = horiz = false;//peritto
                         }
                         else {
                             column = left - 1;
@@ -167,7 +165,8 @@ public class BattleshipGame extends Application{
                             row = random.nextInt(10);
                             column = random.nextInt(10);
                             System.out.println("i am trapped so Random pick : row "+row+" column "+column);
-                            vert = false; //peritto
+                            smart = vert= false; //peritto
+
                         }
                         else {
                             System.out.println("Go down: row "+row+" column "+column);
@@ -180,7 +179,7 @@ public class BattleshipGame extends Application{
                             row = random.nextInt(10);
                             column = random.nextInt(10);
                             System.out.println("i am trapped so Random pick: row "+row+" column "+column);
-                            vert = false; //peritto
+                            smart = vert = false; //peritto
                         }
                         else{
                             row = up - 1;
@@ -199,14 +198,8 @@ public class BattleshipGame extends Application{
                     prevc = column;
                     double ran = Math.random();
                     if (ran < 0.5) { //horizontal
-                        if(column == 0 ) {
-                            if(playerOcean.getCell(row,column+1).wasShot) row = goVertical(row);
-                            else column ++;
-                        }
-                        else if( column == 9 ) {
-                            if(playerOcean.getCell(row,column-1).wasShot) row = goVertical(row);
-                            else column --;
-                        }
+                        if(column == 0 ) column ++;
+                        else if( column == 9 ) column --;
                         else column = Math.random() < 0.5 ? column - 1 : column + 1;
                     }
                     else { //vertical
