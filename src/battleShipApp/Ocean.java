@@ -64,22 +64,18 @@ public class Ocean extends Parent {
 
     private void checkNeighbors(Ship ship, int r, int c) throws AdjacentTilesException {
         //above
-        //if (r > 0 && ships[r - 1][c].getSeats() != 1 && ships[r - 1][c].getSeats() != ship.getSeats()) {
         if(r>0 && getCell(r-1,c).ship!= null &&  getCell(r-1,c).ship.getSeats()!=ship.getSeats()){
             throw new AdjacentTilesException("neighbor ship above");
         }
         //below
-        //if (r < 9 && ships[r + 1][c].getSeats() != 1 && ships[r + 1][c].getSeats() != ship.getSeats()) {
         if (r < 9 && getCell(r + 1,c).ship != null  && getCell(r + 1,c).ship.getSeats() != ship.getSeats()) {
             throw new AdjacentTilesException("neighbor ship below");
         }
         //left
-        //if (c > 0 && ships[r][c - 1].getSeats() != 1 && ships[r][c - 1].getSeats() != ship.getSeats()) {
         if (c > 0 && getCell(r,c - 1).ship != null && getCell(r,c - 1).ship.getSeats() != ship.getSeats()) {
             throw new AdjacentTilesException("neighbor ship left");
         }
         //right
-        //if (c < 9 && ships[r][c + 1].getSeats() != 1 && ships[r][c + 1].getSeats() != ship.getSeats()) {
         if (c < 9 && getCell(r,c + 1).ship != null && getCell(r,c + 1).ship.getSeats() != ship.getSeats()) {
             throw new AdjacentTilesException("neighbor ship right");
         }
@@ -183,7 +179,6 @@ public class Ocean extends Parent {
                 }
                 return true; //we hit the ship
             }
-
             return false; //miss
         }
     }
