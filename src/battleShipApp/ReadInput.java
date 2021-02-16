@@ -14,7 +14,7 @@ public class ReadInput {
     static int[] parseLineToIntArray(String line) {
         return toIntArray(line.split(","));
     }
-    static int[][] inputPlacement (String path){
+    static int[][] inputPlacement (String path) throws InvalidCountException{
         File file = new File(path);
         BufferedReader reader = null;
         int [][] placements = new int[5][];
@@ -23,6 +23,7 @@ public class ReadInput {
             reader = new BufferedReader(new FileReader(file));
             String line;
             while ((line = reader.readLine()) != null) {
+                if(i==5) throw new InvalidCountException(" more than 5 ships");
                 int [] input = parseLineToIntArray(line);
                 placements[i++] = input;
             }
@@ -41,6 +42,7 @@ public class ReadInput {
                 }
             }
             catch (IOException e) {
+                e.printStackTrace();
             }
         }
         return placements;

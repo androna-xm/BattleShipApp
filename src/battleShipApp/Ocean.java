@@ -47,104 +47,137 @@ public class Ocean extends Parent {
         getChildren().add(rows);
     }
 
-    public static void validateLocation(Ship ship) {
-        try {
-            ship.okToPlaceShipAt();
-        } catch (Exception mes) {
-            System.out.println(mes);
-        }
 
-    }
 
-    public void checkSeat(int row, int column) throws OverlapTilesException {
-        //if (ships[row][column].getSeats() > 1) //not-empty
-        if(getCell(row,column).ship != null)
-            throw new OverlapTilesException("another ship already in this shell");
-    }
 
     private void checkNeighbors(Ship ship, int r, int c) throws AdjacentTilesException {
         //above
         if(r>0 && getCell(r-1,c).ship!= null &&  getCell(r-1,c).ship.getSeats()!=ship.getSeats()){
-            throw new AdjacentTilesException("neighbor ship above");
+            throw new AdjacentTilesException(getCell(r,c).ship.getType()+" has neighbor ship above");
         }
         //below
         if (r < 9 && getCell(r + 1,c).ship != null  && getCell(r + 1,c).ship.getSeats() != ship.getSeats()) {
-            throw new AdjacentTilesException("neighbor ship below");
+            throw new AdjacentTilesException(getCell(r,c).ship.getType()+" has neighbor ship below");
         }
         //left
         if (c > 0 && getCell(r,c - 1).ship != null && getCell(r,c - 1).ship.getSeats() != ship.getSeats()) {
-            throw new AdjacentTilesException("neighbor ship left");
+            throw new AdjacentTilesException(getCell(r,c).ship.getType()+" has neighbor ship left");
         }
         //right
         if (c < 9 && getCell(r,c + 1).ship != null && getCell(r,c + 1).ship.getSeats() != ship.getSeats()) {
-            throw new AdjacentTilesException("neighbor ship right");
+            throw new AdjacentTilesException(getCell(r,c).ship.getType()+" has neighbor ship right");
         }
     }
 
-    private void placeShipAt(Ship ship, int row, int column, int orientation) {  //putting a reference to the ship in each of 1 or more locations (up to 5) in the ships
-        ship.setRow(row);
-        ship.setColumn(column);
-        if (orientation == 2) {
-            ship.setVertical(true);
-        }
-        validateLocation(ship); //in-border
+
+    private void placeShipAt(Ship ship) throws OverlapTilesException, AdjacentTilesException{  //putting a reference to the ship in each of 1 or more locations (up to 5) in the ships
         try {
             if (ship.isVertical()) {
-                for (int r = row; r < row + ship.getSeats(); r++) {
-                    checkSeat(r, column);//empty or taken
-                    checkNeighbors(ship, r, column);
-                    //ships[r][column] = ship;
-                    Cell cell = getCell(r, column);
+                for (int r = ship.getRow(); r < ship.getRow() + ship.getSeats(); r++) {
+                    //Overlap
+                    if (getCell(r, ship.getColumn()).ship != null)
+                        throw new OverlapTilesException("another ship already in this shell");
+                    //Adjacent
+                    checkNeighbors(ship, r, ship.getColumn());
+
+                    //Put the new cell of the ship
+                    Cell cell = getCell(r, ship.getColumn());
                     cell.ship = ship;
-                    if(!enemy){
-                        cell.setFill(Color.WHITE);
-                        cell.setStroke(Color.GREEN);
-                    }
-                }
-            } else {
-                for (int c = column; c < column + ship.getSeats(); c++) {
-                    checkSeat(row, c);//empty or taken
-                    checkNeighbors(ship, row, c);
-                    //ships[row][c] = ship;
-                    Cell cell = getCell(row, c);
-                    cell.ship = ship;
-                    if(!enemy){
+                    if (!enemy) {
                         cell.setFill(Color.WHITE);
                         cell.setStroke(Color.GREEN);
                     }
                 }
             }
-        } catch (Exception mes) {
-            System.out.println(mes);
+            else {
+                for (int c = ship.getColumn(); c < ship.getColumn() + ship.getSeats(); c++) {
+                    //Overlap
+                    if(getCell(ship.getRow(),c).ship != null)
+                        throw new OverlapTilesException("another ship already in this shell");
+                    //Adjacent
+                    checkNeighbors(ship, ship.getRow(), c);
+
+                    Cell cell = getCell(ship.getRow(), c);
+                    cell.ship = ship;
+                    if (!enemy) {
+                        cell.setFill(Color.WHITE);
+                        cell.setStroke(Color.GREEN);
+                    }
+                }
+            }
         }
+        catch(OverlapTilesException e){
+            throw new OverlapTilesException(e.getMessage());
+            //clean table
+        }
+        catch(AdjacentTilesException e){
+            throw new AdjacentTilesException(e.getMessage());
+            //clean table
+        }
+
     }
     public Cell getCell(int row, int column) {
         return (Cell)((HBox)rows.getChildren().get(row)).getChildren().get(column);
     }
-    public void shipPlacement(int[][] placement) {
+    public void shipPlacement(int[][] placement) throws OversizeException,OverlapTilesException,AdjacentTilesException{
+        Carrier carrier = new Carrier();
+        Battleship battleship = new Battleship();
+        Cruiser cruiser = new Cruiser();
+        Submarine submarine = new Submarine();
+        Destroyer destroyer = new Destroyer();
+
         for (int ship = 0; ship < 5; ship++) {
             switch (placement[ship][0]) {
                 case 1 -> {
-                    Carrier carrier = new Carrier();
-                    placeShipAt(carrier, placement[ship][1], placement[ship][2], placement[ship][3]);
+                    carrier.setRow(placement[ship][1]);
+                    carrier.setColumn(placement[ship][2]);
+                    if (placement[ship][3] == 2) carrier.setVertical(true);
                 }
                 case 2 -> {
-                    Battleship battleship = new Battleship();
-                    placeShipAt(battleship, placement[ship][1], placement[ship][2], placement[ship][3]);
+                    battleship.setRow(placement[ship][1]);
+                    battleship.setColumn(placement[ship][2]);
+                    if (placement[ship][3] == 2) battleship.setVertical(true);
                 }
                 case 3 -> {
-                    Cruiser cruiser = new Cruiser();
-                    placeShipAt(cruiser, placement[ship][1], placement[ship][2], placement[ship][3]);
+                    cruiser.setRow(placement[ship][1]);
+                    cruiser.setColumn(placement[ship][2]);
+                    if (placement[ship][3] == 2) cruiser.setVertical(true);
                 }
                 case 4 -> {
-                    Submarine submarine = new Submarine();
-                    placeShipAt(submarine, placement[ship][1], placement[ship][2], placement[ship][3]);
+                    submarine.setRow(placement[ship][1]);
+                    submarine.setColumn(placement[ship][2]);
+                    if (placement[ship][3] == 2) submarine.setVertical(true);
                 }
                 case 5 -> {
-                    Destroyer destroyer = new Destroyer();
-                    placeShipAt(destroyer, placement[ship][1], placement[ship][2], placement[ship][3]);
+                    destroyer.setRow(placement[ship][1]);
+                    destroyer.setColumn(placement[ship][2]);
+                    if (placement[ship][3] == 2) destroyer.setVertical(true);
                 }
             }
+        }
+        try{
+            //Oversize
+            carrier.okToPlaceShipAt();
+            battleship.okToPlaceShipAt();
+            cruiser.okToPlaceShipAt();
+            submarine.okToPlaceShipAt();
+            destroyer.okToPlaceShipAt();
+
+
+            placeShipAt(carrier);
+            placeShipAt(battleship);
+            placeShipAt(cruiser);
+            placeShipAt(submarine);
+            placeShipAt(destroyer);
+        }
+        catch(OversizeException e){
+            throw new OversizeException(e.getMessage());
+        }
+        catch(OverlapTilesException e){
+            throw new OverlapTilesException(e.getMessage());
+        }
+        catch(AdjacentTilesException e){
+            throw new AdjacentTilesException(e.getMessage());
         }
     }
 

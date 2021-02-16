@@ -1,8 +1,7 @@
 package battleShipApp;
-import java.sql.SQLOutput;
+
 import java.util.Random;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,6 +10,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import battleShipApp.Ocean.Cell;
+import battleShipApp.PopupBox;
+
 
 public class BattleshipGame extends Application{
     private Ocean enemyOcean, playerOcean;
@@ -57,7 +58,13 @@ public class BattleshipGame extends Application{
         MenuItem start = new MenuItem("Start");
         start.setOnAction(event -> startGame());
         applicationMenu.getItems().add(start);
-        applicationMenu.getItems().add(new MenuItem("Load..."));
+
+        MenuItem load = new MenuItem("Load...");
+        load.setOnAction(event -> {
+            PopupBox.display("Scenario-ID", "Define your scenarios");
+        });
+        applicationMenu.getItems().add(load);
+
         applicationMenu.getItems().add(new SeparatorMenuItem());
         applicationMenu.getItems().add(new MenuItem("Exit"));
 
@@ -82,9 +89,9 @@ public class BattleshipGame extends Application{
 
     private void startGame() {
         // place ships
-        int [][] user_placements =  ReadInput.inputPlacement("C:\\Users\\Χριστίνα-Μαρία\\IdeaProjects\\BattleShip\\medialab\\player_default.txt");
-        int [][] enemy_placements = ReadInput.inputPlacement("C:\\Users\\Χριστίνα-Μαρία\\IdeaProjects\\BattleShip\\medialab\\enemy_default.txt");
         try{
+            int [][] user_placements =  ReadInput.inputPlacement("C:\\Users\\Χριστίνα-Μαρία\\IdeaProjects\\BattleShip\\medialab\\player_default.txt");
+            int [][] enemy_placements = ReadInput.inputPlacement("C:\\Users\\Χριστίνα-Μαρία\\IdeaProjects\\BattleShip\\medialab\\enemy_default.txt");
             ReadInput.validate(user_placements);
             playerOcean.shipPlacement(user_placements);
             ReadInput.validate(enemy_placements);
@@ -99,6 +106,7 @@ public class BattleshipGame extends Application{
         }
         catch(Exception m){
             System.out.println(m);
+            System.out.println("The game didnt start");
         }
     }
 

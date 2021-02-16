@@ -64,11 +64,11 @@ public abstract class Ship {
     public void okToPlaceShipAt() throws OversizeException {
         if (vertical) {
             if (row < 0 || row > 10 - seats || column < 0 || column > 9) {
-                throw new OversizeException(" Oversize,Ship placed out of border");
+                throw new OversizeException(" Oversize,Ship "+getType()+" placed out of border");
             }
         } else {
             if (row < 0 || row > 9 || column < 0 || column > 10 - seats) {
-                throw new OversizeException(" Oversize,Ship placed out of border");
+                throw new OversizeException(" Oversize,Ship "+getType()+" placed out of border");
             }
         }
     }
