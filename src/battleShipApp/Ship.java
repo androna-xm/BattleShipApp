@@ -72,7 +72,6 @@ public abstract class Ship {
         }
     }
 
-
     public boolean isAlive() { return health > 0; }
 
 }

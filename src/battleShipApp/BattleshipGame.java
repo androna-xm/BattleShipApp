@@ -18,6 +18,7 @@ public class BattleshipGame extends Application{
     private boolean enemyTurn,smart,horiz,vert,random_smart;
     private int row, column, prevr, prevc,left, right, up, down, prevleft,prevright, prevup, prevdown;
     private Random random = new Random();
+    Stage window;
 
     private Parent createContent(){
         BorderPane root = new BorderPane();
@@ -60,13 +61,14 @@ public class BattleshipGame extends Application{
         applicationMenu.getItems().add(start);
 
         MenuItem load = new MenuItem("Load...");
-        load.setOnAction(event -> {
-            PopupBox.display("Scenario-ID", "Define your scenarios");
-        });
+        load.setOnAction(event -> { PopupBox.display("Scenario-ID", "Define your scenarios"); } );
         applicationMenu.getItems().add(load);
 
         applicationMenu.getItems().add(new SeparatorMenuItem());
-        applicationMenu.getItems().add(new MenuItem("Exit"));
+
+        MenuItem exit = new MenuItem("Exit");
+        exit.setOnAction(event ->closeProgram());
+        applicationMenu.getItems().add(exit);
 
         //Menu “Details”
         Menu detailsMenu = new Menu("Details");
@@ -282,12 +284,25 @@ public class BattleshipGame extends Application{
 
     public void start(Stage primaryStage) throws Exception{
         //Parent root = FXMLLoader.load(getClass().getResource("battle.fxml"));
-        primaryStage.setTitle("Medialab Battleship");
+        window = primaryStage;
+        window.setTitle("Medialab Battleship");
+
+        window.setOnCloseRequest(e-> {
+            e.consume();
+            closeProgram();
+        });
+
+
         Scene scene = new Scene(createContent(), 600, 900);  //createContent returns root
         //Scene scene = new Scene(root);
 
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        window.setScene(scene);
+        window.show();
+    }
+    private void closeProgram(){
+        boolean answer = ConfirmBox.display("Exit", "ARe you sure you want to exit?");
+        if(answer)
+            window.close();
     }
     public static void main(String[] args)  { launch(args);}
 }
