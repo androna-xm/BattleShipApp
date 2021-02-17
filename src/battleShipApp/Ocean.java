@@ -22,11 +22,6 @@ public class Ocean extends Parent {
 
     //constructor
     public Ocean(boolean enemy, EventHandler<? super MouseEvent> handler) {
-        //create an empty Ocean with EmptyShips
-        /*EmptyShip empty = new EmptyShip();
-        for (Ship[] row : ships)
-            Arrays.fill(row, empty);
-         */
         this.enemy = enemy;
         shotsFired = 0;
         hitCount = 0;
@@ -47,28 +42,24 @@ public class Ocean extends Parent {
         getChildren().add(rows);
     }
 
-
-
-
     private void checkNeighbors(Ship ship, int r, int c) throws AdjacentTilesException {
         //above
         if(r>0 && getCell(r-1,c).ship!= null &&  getCell(r-1,c).ship.getSeats()!=ship.getSeats()){
-            throw new AdjacentTilesException(getCell(r,c).ship.getType()+" has neighbor ship above");
+            throw new AdjacentTilesException(ship.getType()+" has neighbor ship above");
         }
         //below
         if (r < 9 && getCell(r + 1,c).ship != null  && getCell(r + 1,c).ship.getSeats() != ship.getSeats()) {
-            throw new AdjacentTilesException(getCell(r,c).ship.getType()+" has neighbor ship below");
+            throw new AdjacentTilesException(ship.getType()+" has neighbor ship below");
         }
         //left
         if (c > 0 && getCell(r,c - 1).ship != null && getCell(r,c - 1).ship.getSeats() != ship.getSeats()) {
-            throw new AdjacentTilesException(getCell(r,c).ship.getType()+" has neighbor ship left");
+            throw new AdjacentTilesException(ship.getType()+" has neighbor ship left");
         }
         //right
         if (c < 9 && getCell(r,c + 1).ship != null && getCell(r,c + 1).ship.getSeats() != ship.getSeats()) {
-            throw new AdjacentTilesException(getCell(r,c).ship.getType()+" has neighbor ship right");
+            throw new AdjacentTilesException(ship.getType()+" has neighbor ship right");
         }
     }
-
 
     private void placeShipAt(Ship ship) throws OverlapTilesException, AdjacentTilesException{  //putting a reference to the ship in each of 1 or more locations (up to 5) in the ships
         try {
@@ -83,10 +74,6 @@ public class Ocean extends Parent {
                     //Put the new cell of the ship
                     Cell cell = getCell(r, ship.getColumn());
                     cell.ship = ship;
-                    if (!enemy) {
-                        cell.setFill(Color.WHITE);
-                        cell.setStroke(Color.GREEN);
-                    }
                 }
             }
             else {
@@ -99,26 +86,32 @@ public class Ocean extends Parent {
 
                     Cell cell = getCell(ship.getRow(), c);
                     cell.ship = ship;
-                    if (!enemy) {
-                        cell.setFill(Color.WHITE);
-                        cell.setStroke(Color.GREEN);
-                    }
                 }
             }
         }
         catch(OverlapTilesException e){
+            cleanOcean();
+            //System.out.println("cleaned ocean");
             throw new OverlapTilesException(e.getMessage());
-            //clean table
         }
         catch(AdjacentTilesException e){
+            cleanOcean();
             throw new AdjacentTilesException(e.getMessage());
-            //clean table
         }
 
     }
-    public Cell getCell(int row, int column) {
-        return (Cell)((HBox)rows.getChildren().get(row)).getChildren().get(column);
+    private void paintShips(){
+        for (int i=0; i<10; i++){
+            for(int j =0; j<10; j++){
+                Cell cell =getCell(i,j);
+                if(cell.ship != null ){
+                    cell.setFill(Color.WHITE);
+                    cell.setStroke(Color.GREEN);
+                }
+            }
+        }
     }
+
     public void shipPlacement(int[][] placement) throws OversizeException,OverlapTilesException,AdjacentTilesException{
         Carrier carrier = new Carrier();
         Battleship battleship = new Battleship();
@@ -163,12 +156,13 @@ public class Ocean extends Parent {
             submarine.okToPlaceShipAt();
             destroyer.okToPlaceShipAt();
 
-
             placeShipAt(carrier);
             placeShipAt(battleship);
             placeShipAt(cruiser);
             placeShipAt(submarine);
             placeShipAt(destroyer);
+
+            if(!enemy) paintShips();
         }
         catch(OversizeException e){
             throw new OversizeException(e.getMessage());
@@ -181,6 +175,14 @@ public class Ocean extends Parent {
         }
     }
 
+    private void cleanOcean(){
+        for(int i=0; i<10; i++){
+            for(int j=0; j<10; j++){
+                if(getCell(i,j).ship != null)
+                    getCell(i,j).ship = null;
+            }
+        }
+    }
     public class Cell extends Rectangle{
         public int row, column ;
         public boolean wasShot = false;
@@ -214,6 +216,10 @@ public class Ocean extends Parent {
             }
             return false; //miss
         }
+    }
+
+    public Cell getCell(int row, int column) {
+        return (Cell)((HBox)rows.getChildren().get(row)).getChildren().get(column);
     }
 }
 

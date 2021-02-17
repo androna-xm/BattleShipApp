@@ -60,7 +60,6 @@ public abstract class Ship {
         return vertical;
     }
 
-
     public void okToPlaceShipAt() throws OversizeException {
         if (vertical) {
             if (row < 0 || row > 10 - seats || column < 0 || column > 9) {
