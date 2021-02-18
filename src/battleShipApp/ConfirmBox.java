@@ -3,6 +3,7 @@ package battleShipApp;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.*;
 
@@ -15,7 +16,8 @@ public class ConfirmBox {
 
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle(title);
-        window.setMinHeight(250);
+        window.setMinHeight(125);
+        window.setMinWidth(250);
 
         Label label = new Label();
         label.setText(message);
@@ -34,12 +36,17 @@ public class ConfirmBox {
         });
 
 
+        HBox hlayout = new HBox(10);
+        hlayout.getChildren().addAll(yesButton,noButton);
         VBox layout = new VBox(10);
-        layout.getChildren().addAll(label,yesButton, noButton);
-        label.setAlignment(Pos.CENTER);
+        layout.getChildren().addAll(label,hlayout);
+        layout.setAlignment(Pos.CENTER);
+        hlayout.setAlignment(Pos.CENTER);
+
 
         Scene scene = new Scene(layout);
         window.setScene(scene);
+        window.setResizable(false);
         window.showAndWait();
 
         return answer;

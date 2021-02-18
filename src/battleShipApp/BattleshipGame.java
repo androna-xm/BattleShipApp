@@ -61,7 +61,12 @@ public class BattleshipGame extends Application{
         applicationMenu.getItems().add(start);
 
         MenuItem load = new MenuItem("Load...");
-        load.setOnAction(event -> { PopupBox.display("Scenario-ID", "Define your scenarios"); } );
+        load.setOnAction(event -> {
+            PopupBox popupBox = new PopupBox(playerOcean, enemyOcean);
+            popupBox.display("Scenario-ID", "Define your scenarios");
+            enemyOcean = popupBox.getPlayerOcean();
+            playerOcean = popupBox.getPlayerOcean();
+        } );
         applicationMenu.getItems().add(load);
 
         applicationMenu.getItems().add(new SeparatorMenuItem());
@@ -89,27 +94,16 @@ public class BattleshipGame extends Application{
 
     }
 
+
     private void startGame() {
-        // place ships
-        try{
-            int [][] user_placements =  ReadInput.inputPlacement("C:\\Users\\Χριστίνα-Μαρία\\IdeaProjects\\BattleShip\\medialab\\player_default.txt");
-            int [][] enemy_placements = ReadInput.inputPlacement("C:\\Users\\Χριστίνα-Μαρία\\IdeaProjects\\BattleShip\\medialab\\enemy_default.txt");
-            ReadInput.validate(user_placements);
-            playerOcean.shipPlacement(user_placements);
-            ReadInput.validate(enemy_placements);
-            enemyOcean.shipPlacement(enemy_placements);
-            //pick turn
-            int turn = random.nextInt(2);
-            System.out.println(turn);
-            if(turn == 1) {//enemy's turn
-                enemyTurn = true;
-                enemyMove();
-            }
+        //pick turn
+        int turn = random.nextInt(2);
+        System.out.println(turn);
+        if(turn == 1) {//enemy's turn
+            enemyTurn = true;
+            enemyMove();
         }
-        catch(Exception m){
-            System.out.println(m);
-            System.out.println("The game didnt start");
-        }
+
     }
 
     private void enemyMove() {
@@ -283,7 +277,6 @@ public class BattleshipGame extends Application{
     }
 
     public void start(Stage primaryStage) throws Exception{
-        //Parent root = FXMLLoader.load(getClass().getResource("battle.fxml"));
         window = primaryStage;
         window.setTitle("Medialab Battleship");
 
@@ -300,7 +293,7 @@ public class BattleshipGame extends Application{
         window.show();
     }
     private void closeProgram(){
-        boolean answer = ConfirmBox.display("Exit", "ARe you sure you want to exit?");
+        boolean answer = ConfirmBox.display("Exit", "Are you sure you want to exit?");
         if(answer)
             window.close();
     }
