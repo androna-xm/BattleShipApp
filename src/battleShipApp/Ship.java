@@ -74,6 +74,8 @@ public abstract class Ship {
 
     public boolean isAlive() { return health > 0; }
 
+    public boolean firstShot() {return (seats - health) ==1;}
+
 }
 
     class Carrier extends Ship {
@@ -220,32 +222,4 @@ public abstract class Ship {
         }
     }
 
-    class EmptyShip extends Ship {
-        public EmptyShip() {
-            setSeats(1);
-            setPoints(0);
-            setBonus(0);
-        }
 
-        @Override
-        public String getType() {
-            return "Empty";
-        }
-
-        @Override
-        public int getSeats() {
-            return 1;
-        }
-
-        @Override
-        public int getPoints() {
-            return 0;
-        }
-
-        @Override
-        public int getBonus() {
-            return 0;
-        }
-
-
-    }

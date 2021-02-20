@@ -15,7 +15,9 @@ public class Ocean extends Parent {
     int shotsFired; //the total number of shots fired by the user
     int hitCount; //the number of times a shot hit a ship
     int shipSunk;//the number of sunk ships
-    int shipsAlive = 5;
+    int shipsAlive
+            ;
+    int shipShot;
     int points;
     private VBox rows = new VBox();
     public boolean enemy = false;
@@ -27,6 +29,8 @@ public class Ocean extends Parent {
         hitCount = 0;
         shipSunk = 0;
         points = 0;
+        shipShot = 0;
+        shipsAlive = 5;
 
         for (int r = 0; r < 10; r++) {
             HBox row = new HBox();
@@ -175,11 +179,28 @@ public class Ocean extends Parent {
         }
     }
 
-    private void cleanOcean(){
+    public void cleanOcean(){
         for(int i=0; i<10; i++){
             for(int j=0; j<10; j++){
                 if(getCell(i,j).ship != null)
                     getCell(i,j).ship = null;
+            }
+        }
+    }
+    public void restartOcean(){
+        shotsFired = 0;
+        hitCount = 0;
+        shipSunk = 0;
+        points = 0;
+        shipShot = 0;
+        shipsAlive = 5;
+        for(int i=0; i<10; i++) {
+            for (int j = 0; j < 10; j++) {
+                if(getCell(i,j).ship != null)
+                    getCell(i,j).ship = null;
+                getCell(i,j).wasShot = false;
+                getCell(i,j).setFill(Color.LIGHTGRAY);
+                getCell(i,j).setStroke(Color.BLACK);
             }
         }
     }
@@ -195,6 +216,8 @@ public class Ocean extends Parent {
             this.row = row;
             this.column = column;
             this.ocean = ocean;
+            wasShot = false;
+            ship = null;
             setFill(Color.LIGHTGRAY);
             setStroke(Color.BLACK);
         }
@@ -205,12 +228,14 @@ public class Ocean extends Parent {
 
             if (ship != null) {
                 ship.health --;
+                if(ship.firstShot()) shipShot++;
                 points+= ship.getPoints();
                 setFill(Color.RED);
                 if (!ship.isAlive()) {
                     points += ship.getBonus();
                     shipsAlive --;
                     shipSunk ++;
+                    shipShot --;
                 }
                 return true; //we hit the ship
             }

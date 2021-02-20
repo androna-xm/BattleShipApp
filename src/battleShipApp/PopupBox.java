@@ -10,20 +10,21 @@ import javafx.stage.*;
 import javafx.scene.control.TextArea;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
+import battleShipApp.BattleshipGame;
 
 
 
 public class PopupBox {
-    boolean placed, player_check, enemy_check;
+    boolean placed, player_check, enemy_check, running;
     Ocean playerOcean,enemyOcean;
 
-    PopupBox(Ocean playerOcean, Ocean enemyOcean){
+    PopupBox(Ocean playerOcean, Ocean enemyOcean, boolean running){
         this.playerOcean = playerOcean;
         this.enemyOcean = enemyOcean;
+        this.running = running;
     }
 
 
@@ -60,12 +61,12 @@ public class PopupBox {
         placed = false;
         try{
             if(player){
-                int [][] user_placements =  ReadInput.inputPlacement("C:\\Users\\Χριστίνα-Μαρία\\IdeaProjects\\BattleShip\\medialab\\player_SCENARIO-ID.txt");
+                int [][] user_placements =  ReadInput.inputPlacement("medialab/player_SCENARIO-ID.txt");
                 ReadInput.validate(user_placements);
                 playerOcean.shipPlacement(user_placements);
             }
             else{
-                int [][] enemy_placements = ReadInput.inputPlacement("C:\\Users\\Χριστίνα-Μαρία\\IdeaProjects\\BattleShip\\medialab\\enemy_SCENARIO-ID.txt");
+                int [][] enemy_placements = ReadInput.inputPlacement("medialab/enemy_SCENARIO-ID.txt");
                 ReadInput.validate(enemy_placements);
                 enemyOcean.shipPlacement(enemy_placements);
             }
@@ -79,27 +80,6 @@ public class PopupBox {
         return placed ;
     }
 
-
-    /*private  boolean  prepareGame(){
-        // place ships
-        try{
-            int [][] user_placements =  ReadInput.inputPlacement("C:\\Users\\Χριστίνα-Μαρία\\IdeaProjects\\BattleShip\\medialab\\player_SCENARIO-ID.txt");
-            int [][] enemy_placements = ReadInput.inputPlacement("C:\\Users\\Χριστίνα-Μαρία\\IdeaProjects\\BattleShip\\medialab\\enemy_SCENARIO-ID.txt");
-            ReadInput.validate(user_placements);
-            playerOcean.shipPlacement(user_placements);
-            ReadInput.validate(enemy_placements);
-            enemyOcean.shipPlacement(enemy_placements);
-            placed = true;
-        }
-        catch(Exception m){
-            AlertBox.display("Error", m.getMessage() + "\n Please correct the placement");
-            System.out.println(m);
-            System.out.println("The game didnt start");
-        }
-        return placed ;
-    }
-
-     */
 
     public  void display(String title, String message){
         Stage window = new Stage();
@@ -141,17 +121,27 @@ public class PopupBox {
         Button btnPlayer = new Button("Player Check");
         btnPlayer.setOnAction(event -> {
             saveToFile(playerTextArea, "medialab/player_SCENARIO-ID.txt");
+            if(running)
+                playerOcean.restartOcean();
             player_check = prepareGame(true);
-            if(player_check)
+            if(player_check){
+                playerTextArea.setEditable(false); //cant change the scenario once selected
                 btnPlayer.setDisable(true);
+            }
+
         });
 
         Button btnEnemy = new Button("Enemy Check");
         btnEnemy.setOnAction(event -> {
             saveToFile(enemyTextArea,"medialab/enemy_SCENARIO-ID.txt");
+            if(running)
+                enemyOcean.restartOcean();
             enemy_check = prepareGame(false);
-            if(enemy_check)
+            if(enemy_check){
+                enemyTextArea.setEditable(false);
                 btnEnemy.setDisable(true);
+            }
+
         });
 
         HBox hb1 = new HBox(10);
