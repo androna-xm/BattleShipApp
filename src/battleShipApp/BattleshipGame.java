@@ -3,13 +3,11 @@ package battleShipApp;
 import java.util.LinkedList;
 import java.util.Random;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
@@ -108,12 +106,28 @@ public class BattleshipGame extends Application{
         playerInfo.setText("Player Info:\nActive Ships = "+playerOcean.shipsAlive +"\nPoints = "+playerOcean.points+ "\nSuccessful Shoots = "+ playerOcean.hitCount);
         enemyInfo.setText("Enemy Info:\nActive Ships = "+enemyOcean.shipsAlive +"\nPoints = "+enemyOcean.points+ "\nSuccessful Shoots = "+ enemyOcean.hitCount);
         int turn = random.nextInt(2);
-        System.out.println(turn);
+        //System.out.println(turn);
         if(turn == 1) {//enemy's turn
             enemyTurn = true;
             enemyMove();
         }
 
+    }
+
+    private void playerMoves(Cell cell){
+        if (cell.wasShot)
+            return;
+        if(cell.shoot())
+            addToHistory(playerHistory,"("+cell.row +","+ cell.column +"),hit,"+cell.ship.getType());
+        else
+            addToHistory(playerHistory,"("+cell.row +","+ cell.column +"),miss");
+        playerInfo.setText("Player Info: \nActive Ships = "+playerOcean.shipsAlive +"\nPoints = "+enemyOcean.points+ "\nSuccessful Shoots = "+ enemyOcean.hitCount);
+        if (enemyOcean.shipsAlive == 0) {
+            System.out.println("YOU WIN");
+            System.exit(0);
+        }
+        enemyTurn = true;
+        enemyMove();
     }
 
     private void enemyMove() {
@@ -295,6 +309,7 @@ public class BattleshipGame extends Application{
             history.remove();
         history.add(str);
     }
+
     public void start(Stage primaryStage){
         window = primaryStage;
         window.setTitle("Medialab Battleship");
@@ -309,47 +324,65 @@ public class BattleshipGame extends Application{
         enemyOcean = new Ocean(true, event -> {
             if(running) {//cant shoot if the game hasnt started
                 Cell cell = (Cell) event.getSource(); //the cell that the user clicked to shoot
-                //human plays
-                if (cell.wasShot)
-                    return;
-                if(cell.shoot())
-                    addToHistory(playerHistory,"("+cell.row +","+ cell.column +"),hit,"+cell.ship.getType());
-                else
-                    addToHistory(playerHistory,"("+cell.row +","+ cell.column +"),miss");
-                playerInfo.setText("Player Info: \nActive Ships = "+playerOcean.shipsAlive +"\nPoints = "+enemyOcean.points+ "\nSuccessful Shoots = "+ enemyOcean.hitCount);
-                if (enemyOcean.shipsAlive == 0) {
-                    System.out.println("YOU WIN");
-                    System.exit(0);
-                }
-                enemyTurn = true;
-                enemyMove();
+                playerMoves(cell);
             }
         });
 
         playerOcean = new Ocean(false, event -> {  });
 
-
         HBox infoBox = new HBox(20);
-
-
         infoBox.getChildren().addAll(playerInfo,enemyInfo);
         infoBox.setAlignment(Pos.CENTER);
 
 
-
         //Set the Board with the Oceans
-        VBox vbox = new VBox(50,infoBox, setBoard(enemyOcean), setBoard(playerOcean));
+        HBox hBox = new HBox(50, setBoard(playerOcean), setBoard(enemyOcean));
+        hBox.setAlignment(Pos.CENTER);
+
+        VBox vbox = new VBox(50,infoBox,hBox,shootArea());
         vbox.setAlignment(Pos.CENTER);
 
         root.setTop(createMenu());
         root.setCenter(vbox);
 
-        Scene scene = new Scene(root, 600, 900);  //createContent returns root
+        Scene scene = new Scene(root, 900, 900);  //createContent returns root
         //Scene scene = new Scene(root);
 
         window.setScene(scene);
         window.show();
     }
+
+    public GridPane shootArea(){
+        //Input field for player to shoot
+        GridPane gridpane = new GridPane();
+        gridpane.setHgap(10);
+        gridpane.setVgap(10);
+        //gridpane.add(new Label("Define the row and the column of your next shot"),1,0);
+        gridpane.add(new Label("Row:"), 0, 1);
+        ChoiceBox<Integer> rowChoice = new ChoiceBox<Integer>();
+        rowChoice.getItems().addAll(0,1,2,3,4,5,6,7,8,9);
+        gridpane.add(rowChoice,1,1);
+        gridpane.add(new Label("Column:"), 2,1);
+        ChoiceBox<Integer> colChoice = new ChoiceBox<Integer>();
+        colChoice.getItems().addAll(0,1,2,3,4,5,6,7,8,9);
+        gridpane.add(colChoice,3,1);
+        Button shootBtn = new Button("Shoot");
+        gridpane.add(shootBtn,4,1);
+        shootBtn.setOnAction(e -> {
+            if(running)
+                getChoice(rowChoice,colChoice);
+        });
+        gridpane.setAlignment(Pos.CENTER);
+        return gridpane;
+    }
+
+    private void getChoice(ChoiceBox<Integer> rowChoice, ChoiceBox<Integer> colChoice){
+        int row = rowChoice.getValue();
+        int column = colChoice.getValue();
+        Cell cell = enemyOcean.getCell(row,column);
+        playerMoves(cell);
+    }
+
 
     public HBox setBoard(Ocean ocean){
         HBox columns = new HBox();
