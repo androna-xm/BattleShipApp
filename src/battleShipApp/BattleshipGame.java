@@ -26,6 +26,8 @@ public class BattleshipGame extends Application{
     Stage window;
     LinkedList<String> playerHistory = new LinkedList<String>();//to store the 5 last coordinates,with their results
     LinkedList<String> enemyHistory = new LinkedList<String>();
+    Label playerInfo = new Label();
+    Label enemyInfo = new Label();
 
     private MenuBar createMenu(){
 
@@ -103,6 +105,8 @@ public class BattleshipGame extends Application{
     private void startGame() {
         //pick turn
         running = true;
+        playerInfo.setText("Player Info:\nActive Ships = "+playerOcean.shipsAlive +"\nPoints = "+playerOcean.points+ "\nSuccessful Shoots = "+ playerOcean.hitCount);
+        enemyInfo.setText("Enemy Info:\nActive Ships = "+enemyOcean.shipsAlive +"\nPoints = "+enemyOcean.points+ "\nSuccessful Shoots = "+ enemyOcean.hitCount);
         int turn = random.nextInt(2);
         System.out.println(turn);
         if(turn == 1) {//enemy's turn
@@ -274,6 +278,7 @@ public class BattleshipGame extends Application{
                 }
                 else smart = false;
             }
+            enemyInfo.setText("Enemy Info:\nActive Ships = "+enemyOcean.shipsAlive +"\nPoints = "+playerOcean.points+ "\nSuccessful Shoots = "+ playerOcean.hitCount);
 
             enemyTurn = false;
 
@@ -311,6 +316,7 @@ public class BattleshipGame extends Application{
                     addToHistory(playerHistory,"("+cell.row +","+ cell.column +"),hit,"+cell.ship.getType());
                 else
                     addToHistory(playerHistory,"("+cell.row +","+ cell.column +"),miss");
+                playerInfo.setText("Player Info: \nActive Ships = "+playerOcean.shipsAlive +"\nPoints = "+enemyOcean.points+ "\nSuccessful Shoots = "+ enemyOcean.hitCount);
                 if (enemyOcean.shipsAlive == 0) {
                     System.out.println("YOU WIN");
                     System.exit(0);
@@ -324,10 +330,8 @@ public class BattleshipGame extends Application{
 
 
         HBox infoBox = new HBox(20);
-        Label playerInfo = new Label();
-        playerInfo.setText("Player Info: Active Ships = "+playerOcean.shipsAlive +" Points = "+playerOcean.points+ " Successful Shoots = "+ playerOcean.hitCount);
-        Label enemyInfo = new Label();
-        enemyInfo.setText("Enemy Info: Active Ships = "+enemyOcean.shipsAlive +" Points = "+enemyOcean.points+ " Successful Shoots = "+ enemyOcean.hitCount);
+
+
         infoBox.getChildren().addAll(playerInfo,enemyInfo);
         infoBox.setAlignment(Pos.CENTER);
 
@@ -378,10 +382,12 @@ public class BattleshipGame extends Application{
         total.setAlignment(Pos.CENTER);
         return total;
     }
+
     private void closeProgram(){
         boolean answer = ConfirmBox.display("Exit", "Are you sure you want to exit?");
         if(answer)
             window.close();
     }
+
     public static void main(String[] args)  { launch(args);}
 }

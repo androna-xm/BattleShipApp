@@ -232,7 +232,6 @@ public class Ocean extends Parent {
             if (ship != null) {
                 ship.health --;
                 hitCount++;
-                System.out.println("hitCOunt:" +hitCount);
                 if(ship.firstShot()) shipShot++;
                 points+= ship.getPoints();
                 setFill(Color.RED);
