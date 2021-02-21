@@ -30,21 +30,16 @@ public class BattleshipGame extends Application{
     private MenuBar createMenu(){
 
         Menu applicationMenu = new Menu("_Application");
-        //-------Start--------//
+
         MenuItem start = new MenuItem("Start");
         start.setOnAction(event -> {
             if(loaded) { //push the button only if the files have been loaded
-                if (running) { //if already running
-                    enemyOcean.cleanOcean();
-                    playerOcean.cleanOcean();
-                }
                 startGame();
                 loaded = false; // so the button start cant be pushed again while playing
             }
         });
         applicationMenu.getItems().add(start);
 
-        //-------------Load------------//
         MenuItem load = new MenuItem("Load...");
         load.setOnAction(event -> {
             PopupBox popupBox = new PopupBox(playerOcean,enemyOcean,running);
@@ -53,12 +48,14 @@ public class BattleshipGame extends Application{
             playerOcean = popupBox.getPlayerOcean();
             loaded = true; // the files are loaded so the game can start
             if(running) running = false; //so the game can restart when start button is pressed
+            playerInfo.setText("Player Info:\nActive Ships = "+playerOcean.shipsAlive +"\nPoints = "+playerOcean.points+ "\nSuccessful Shoots = "+ playerOcean.hitCount);
+            enemyInfo.setText("Enemy Info:\nActive Ships = "+enemyOcean.shipsAlive +"\nPoints = "+enemyOcean.points+ "\nSuccessful Shoots = "+ enemyOcean.hitCount);
         } );
         applicationMenu.getItems().add(load);
 
         applicationMenu.getItems().add(new SeparatorMenuItem());
 
-        //------------------Exit-----------//
+
         MenuItem exit = new MenuItem("Exit");
         exit.setOnAction(event ->closeProgram());
         applicationMenu.getItems().add(exit);
@@ -66,31 +63,33 @@ public class BattleshipGame extends Application{
         //Menu “Details”
         Menu detailsMenu = new Menu("Details");
 
-        //---------------Enemy Ships----------//
         MenuItem enemyShips = new MenuItem("Enemy Ships...");
         enemyShips.setOnAction(event -> {
-            AlertBox alertBox = new AlertBox();
-            int enemyShipsSunk = enemyOcean.shipSunk;
-            int enemyShipsShot = enemyOcean.shipShot;
-            int enemyShipsHealthy = enemyOcean.shipsAlive - enemyShipsShot;
-            alertBox.display("Enemy Ships","Alive: " + enemyShipsHealthy+"\nShot: "+ enemyShipsShot+"\nSunk: "+enemyShipsSunk );
+            if(running) {
+                AlertBox alertBox = new AlertBox();
+                int enemyShipsSunk = enemyOcean.shipSunk;
+                int enemyShipsShot = enemyOcean.shipShot;
+                int enemyShipsHealthy = enemyOcean.shipsAlive - enemyShipsShot;
+                alertBox.display("Enemy Ships", "Alive: " + enemyShipsHealthy + "\nShot: " + enemyShipsShot + "\nSunk: " + enemyShipsSunk);
+            }
         });
         detailsMenu.getItems().add(enemyShips);
 
-        //----------------Player Shots--------------//
         MenuItem playerShots = new MenuItem("Player Shots...");
         playerShots.setOnAction(event ->{
-            HistoryBox pHistory = new HistoryBox(playerHistory);
-            pHistory.display("Player Shots", "The last 5 moves of the player ");
+            if(running) {
+                HistoryBox pHistory = new HistoryBox(playerHistory);
+                pHistory.display("Player Shots", "The last 5 moves of the player ");
+            }
         });
         detailsMenu.getItems().add(playerShots);
 
-
-        //---------------Enemy Shots-------------//
         MenuItem enemyShots = new MenuItem("Enemy Shots...");
         enemyShots.setOnAction(event ->{
-            HistoryBox eHistory = new HistoryBox(enemyHistory);
-            eHistory.display("Enemy Shots", "The last 5 moves of the enemy ");
+            if(running) {
+                HistoryBox eHistory = new HistoryBox(enemyHistory);
+                eHistory.display("Enemy Shots", "The last 5 moves of the enemy ");
+            }
         });
         detailsMenu.getItems().add(enemyShots);
 
@@ -103,8 +102,6 @@ public class BattleshipGame extends Application{
     private void startGame() {
         //pick turn
         running = true;
-        playerInfo.setText("Player Info:\nActive Ships = "+playerOcean.shipsAlive +"\nPoints = "+playerOcean.points+ "\nSuccessful Shoots = "+ playerOcean.hitCount);
-        enemyInfo.setText("Enemy Info:\nActive Ships = "+enemyOcean.shipsAlive +"\nPoints = "+enemyOcean.points+ "\nSuccessful Shoots = "+ enemyOcean.hitCount);
         int turn = random.nextInt(2);
         //System.out.println(turn);
         if(turn == 1) {//enemy's turn
@@ -123,13 +120,26 @@ public class BattleshipGame extends Application{
             addToHistory(playerHistory,"("+cell.row +","+ cell.column +"),miss");
         playerInfo.setText("Player Info: \nActive Ships = "+playerOcean.shipsAlive +"\nPoints = "+enemyOcean.points+ "\nSuccessful Shoots = "+ enemyOcean.hitCount);
         if (enemyOcean.shipsAlive == 0) {
-            System.out.println("YOU WIN");
-            System.exit(0);
+            //System.out.println("YOU WIN");
+            //System.exit(0);
+            AlertBox loseBox = new AlertBox();
+            loseBox.display("End Game", " You won !");
+            restart();
         }
-        enemyTurn = true;
-        enemyMove();
+        else {
+            enemyTurn = true;
+            enemyMove();
+        }
     }
-
+    private void restart(){
+        running = false;
+        playerHistory.clear();
+        enemyHistory.clear();
+        playerOcean.restartOcean();
+        enemyOcean.restartOcean();
+        playerInfo.setText("Player Info:\nActive Ships = "+playerOcean.shipsAlive +"\nPoints = "+playerOcean.points+ "\nSuccessful Shoots = "+ playerOcean.hitCount);
+        enemyInfo.setText("Enemy Info:\nActive Ships = "+enemyOcean.shipsAlive +"\nPoints = "+enemyOcean.points+ "\nSuccessful Shoots = "+ enemyOcean.hitCount);
+    }
     private void enemyMove() {
         while (enemyTurn) {
             if (smart) {
@@ -297,8 +307,11 @@ public class BattleshipGame extends Application{
             enemyTurn = false;
 
             if (playerOcean.shipsAlive == 0) {
-                System.out.println("YOU LOSE");
-                System.exit(0);
+                //System.out.println("YOU LOSE");
+                //System.exit(0);
+                AlertBox loseBox = new AlertBox();
+                loseBox.display("End Game", " You lost !");
+                restart();
             }
 
         }
