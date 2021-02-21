@@ -24,9 +24,9 @@ public class BattleshipGame extends Application{
     LinkedList<String> enemyHistory = new LinkedList<String>();
 
     private MenuBar createMenu(){
-        Menu applicationMenu = new Menu("_Application");
 
-        //Menu Items
+        Menu applicationMenu = new Menu("_Application");
+        //-------Start--------//
         MenuItem start = new MenuItem("Start");
         start.setOnAction(event -> {
             if(loaded) { //push the button only if the files have been loaded
@@ -40,6 +40,7 @@ public class BattleshipGame extends Application{
         });
         applicationMenu.getItems().add(start);
 
+        //-------------Load------------//
         MenuItem load = new MenuItem("Load...");
         load.setOnAction(event -> {
             PopupBox popupBox = new PopupBox(playerOcean,enemyOcean,running);
@@ -53,6 +54,7 @@ public class BattleshipGame extends Application{
 
         applicationMenu.getItems().add(new SeparatorMenuItem());
 
+        //------------------Exit-----------//
         MenuItem exit = new MenuItem("Exit");
         exit.setOnAction(event ->closeProgram());
         applicationMenu.getItems().add(exit);
@@ -60,9 +62,7 @@ public class BattleshipGame extends Application{
         //Menu “Details”
         Menu detailsMenu = new Menu("Details");
 
-        //Menu items
-        //detailsMenu.getItems().addAll(new MenuItem("Enemy Ships..."), new MenuItem("Player Shots..."), new MenuItem("Enemy Shots..."));
-
+        //---------------Enemy Ships----------//
         MenuItem enemyShips = new MenuItem("Enemy Ships...");
         enemyShips.setOnAction(event -> {
             AlertBox alertBox = new AlertBox();
@@ -73,12 +73,23 @@ public class BattleshipGame extends Application{
         });
         detailsMenu.getItems().add(enemyShips);
 
+        //----------------Player Shots--------------//
+        MenuItem playerShots = new MenuItem("Player Shots...");
+        playerShots.setOnAction(event ->{
+            HistoryBox pHistory = new HistoryBox(playerHistory);
+            pHistory.display("Player Shots", "The last 5 moves of the player ");
+        });
+        detailsMenu.getItems().add(playerShots);
+
+
+        //---------------Enemy Shots-------------//
         MenuItem enemyShots = new MenuItem("Enemy Shots...");
         enemyShots.setOnAction(event ->{
             HistoryBox eHistory = new HistoryBox(enemyHistory);
             eHistory.display("Enemy Shots", "The last 5 moves of the enemy ");
         });
         detailsMenu.getItems().add(enemyShots);
+
         //Main menu bar
         MenuBar menubar = new MenuBar();
         menubar.getMenus().addAll(applicationMenu , detailsMenu);
@@ -292,7 +303,10 @@ public class BattleshipGame extends Application{
                 //human plays
                 if (cell.wasShot)
                     return;
-                cell.shoot();
+                if(cell.shoot())
+                    addToHistory(playerHistory,"("+cell.row +","+ cell.column +"),hit,"+cell.ship.getType());
+                else
+                    addToHistory(playerHistory,"("+cell.row +","+ cell.column +"),miss");
                 if (enemyOcean.shipsAlive == 0) {
                     System.out.println("YOU WIN");
                     System.exit(0);
