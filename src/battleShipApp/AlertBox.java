@@ -21,8 +21,6 @@ public class AlertBox {
         label.setText(message);
 
         Button ok = new Button("Ok");
-
-
         ok.setOnAction(e-> awindow.close());
 
 

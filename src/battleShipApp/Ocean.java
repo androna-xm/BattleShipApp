@@ -15,8 +15,7 @@ public class Ocean extends Parent {
     int shotsFired; //the total number of shots fired by the user
     int hitCount; //the number of times a shot hit a ship
     int shipSunk;//the number of sunk ships
-    int shipsAlive
-            ;
+    int shipsAlive;
     int shipShot;
     int points;
     private VBox rows = new VBox();
@@ -36,7 +35,8 @@ public class Ocean extends Parent {
             HBox row = new HBox();
             for (int col = 0; col < 10; col++) {
                 Cell c = new Cell(r,col, this);
-                if(this.enemy) c.setOnMouseClicked(handler); // when we click the mouse on a cell o handler is defined
+                if(this.enemy)
+                    c.setOnMouseClicked(handler); // when we click the mouse on a cell o handler is defined
                 row.getChildren().add(c);
             }
 
@@ -187,6 +187,7 @@ public class Ocean extends Parent {
             }
         }
     }
+
     public void restartOcean(){
         shotsFired = 0;
         hitCount = 0;
@@ -204,6 +205,7 @@ public class Ocean extends Parent {
             }
         }
     }
+
     public class Cell extends Rectangle{
         public int row, column ;
         public boolean wasShot = false;
@@ -228,6 +230,8 @@ public class Ocean extends Parent {
 
             if (ship != null) {
                 ship.health --;
+                hitCount++;
+                System.out.println("hitCOunt:" +hitCount);
                 if(ship.firstShot()) shipShot++;
                 points+= ship.getPoints();
                 setFill(Color.RED);

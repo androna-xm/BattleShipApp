@@ -1,12 +1,13 @@
 package battleShipApp;
 
+import java.util.LinkedList;
 import java.util.Random;
 import javafx.application.Application;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import battleShipApp.Ocean.Cell;
@@ -19,6 +20,8 @@ public class BattleshipGame extends Application{
     private int row, column, prevr, prevc,left, right, up, down, prevleft,prevright, prevup, prevdown;
     private Random random = new Random();
     Stage window;
+    LinkedList<String> playerHistory = new LinkedList<String>();//to store the 5 last coordinates,with their results
+    LinkedList<String> enemyHistory = new LinkedList<String>();
 
     private MenuBar createMenu(){
         Menu applicationMenu = new Menu("_Application");
@@ -70,6 +73,12 @@ public class BattleshipGame extends Application{
         });
         detailsMenu.getItems().add(enemyShips);
 
+        MenuItem enemyShots = new MenuItem("Enemy Shots...");
+        enemyShots.setOnAction(event ->{
+            HistoryBox eHistory = new HistoryBox(enemyHistory);
+            eHistory.display("Enemy Shots", "The last 5 moves of the enemy ");
+        });
+        detailsMenu.getItems().add(enemyShots);
         //Main menu bar
         MenuBar menubar = new MenuBar();
         menubar.getMenus().addAll(applicationMenu , detailsMenu);
@@ -186,6 +195,7 @@ public class BattleshipGame extends Application{
                 //System.out.println("Random pick : row "+row+" column "+column);
             }
 
+
             //System.out.println("smart = " + smart + "\nrow " + row + " prevr " + prevr + "\ncolumn " + column + " prevc " + prevc);
             Cell cell = playerOcean.getCell(row, column);
 
@@ -197,6 +207,7 @@ public class BattleshipGame extends Application{
             }
 
             if (cell.shoot()) { // shoot and hit a ship
+                addToHistory(enemyHistory, "("+row +","+ column +"),hit,"+cell.ship.getType());
                 smart = true;
                 left = right = column;
                 up = down = row;
@@ -227,6 +238,7 @@ public class BattleshipGame extends Application{
 
             }
             else {
+                addToHistory(enemyHistory, "("+row +","+ column +"),miss");
                 if (random_smart) {
                     //System.out.println("missed but random smart");
                     //smart = true; // peritto
@@ -258,7 +270,12 @@ public class BattleshipGame extends Application{
         }
     }
 
-    public void start(Stage primaryStage) throws Exception{
+    public void addToHistory( LinkedList<String> history , String str){
+        if(history.size() == 5)
+            history.remove();
+        history.add(str);
+    }
+    public void start(Stage primaryStage){
         window = primaryStage;
         window.setTitle("Medialab Battleship");
         window.setOnCloseRequest(e-> {
@@ -267,7 +284,7 @@ public class BattleshipGame extends Application{
         });
 
         BorderPane root = new BorderPane();
-        root.setPrefSize(600,800);
+        root.setPrefSize(800,800);
 
         enemyOcean = new Ocean(true, event -> {
             if(running) {//cant shoot if the game hasnt started
@@ -287,11 +304,18 @@ public class BattleshipGame extends Application{
 
         playerOcean = new Ocean(false, event -> {  });
 
+
+        HBox infoBox = new HBox(20);
+        Label playerInfo = new Label();
+        playerInfo.setText("Player Info: Active Ships = "+playerOcean.shipsAlive +" Points = "+playerOcean.points+ " Successful Shoots = "+ playerOcean.hitCount);
+        Label enemyInfo = new Label();
+        enemyInfo.setText("Enemy Info: Active Ships = "+enemyOcean.shipsAlive +" Points = "+enemyOcean.points+ " Successful Shoots = "+ enemyOcean.hitCount);
+        infoBox.getChildren().addAll(playerInfo,enemyInfo);
+        infoBox.setAlignment(Pos.CENTER);
+
         //Set the Board with the Oceans
-        VBox vbox = new VBox(50, enemyOcean, playerOcean);
+        VBox vbox = new VBox(50,infoBox, enemyOcean, playerOcean);
         vbox.setAlignment(Pos.CENTER);
-
-
 
         root.setTop(createMenu());
         root.setCenter(vbox);
