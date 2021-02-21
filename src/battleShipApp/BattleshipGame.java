@@ -100,13 +100,16 @@ public class BattleshipGame extends Application{
     }
 
     private void startGame() {
-        //pick turn
         running = true;
         int turn = random.nextInt(2);
-        //System.out.println(turn);
+        AlertBox turnBox = new AlertBox();
         if(turn == 1) {//enemy's turn
             enemyTurn = true;
+            turnBox.display("","Enemy plays first!");
             enemyMove();
+        }
+        else{
+            turnBox.display("","You play first!");
         }
 
     }
