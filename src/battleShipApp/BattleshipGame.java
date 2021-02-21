@@ -8,7 +8,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import battleShipApp.Ocean.Cell;
 
@@ -327,8 +331,10 @@ public class BattleshipGame extends Application{
         infoBox.getChildren().addAll(playerInfo,enemyInfo);
         infoBox.setAlignment(Pos.CENTER);
 
+
+
         //Set the Board with the Oceans
-        VBox vbox = new VBox(50,infoBox, enemyOcean, playerOcean);
+        VBox vbox = new VBox(50,infoBox, setBoard(enemyOcean), setBoard(playerOcean));
         vbox.setAlignment(Pos.CENTER);
 
         root.setTop(createMenu());
@@ -339,6 +345,38 @@ public class BattleshipGame extends Application{
 
         window.setScene(scene);
         window.show();
+    }
+
+    public HBox setBoard(Ocean ocean){
+        HBox columns = new HBox();
+        for(int c =0; c<10; c++){
+            Rectangle rec = new Rectangle(30,30);
+            rec.setFill(Color.WHITE);
+            rec.setStroke(Color.BLACK);
+            Text num = new Text(String.valueOf(c));
+            StackPane stack = new StackPane();
+            stack.getChildren().addAll(rec,num);
+            columns.getChildren().add(stack);
+        }
+        VBox rows = new VBox();
+        for(int r=0; r<11; r++){
+            Rectangle rec = new Rectangle(30,30);
+            rec.setFill(Color.WHITE);
+            rec.setStroke(Color.BLACK);
+            if(r == 0) {
+                rows.getChildren().add(rec);
+            }
+            else{
+                Text num = new Text(String.valueOf(r-1));
+                StackPane stack = new StackPane();
+                stack.getChildren().addAll(rec,num);
+                rows.getChildren().add(stack);
+            }
+        }
+        VBox box = new VBox (columns,ocean);
+        HBox total = new HBox(rows,box);
+        total.setAlignment(Pos.CENTER);
+        return total;
     }
     private void closeProgram(){
         boolean answer = ConfirmBox.display("Exit", "Are you sure you want to exit?");

@@ -1,6 +1,5 @@
 package battleShipApp;
 
-
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.input.MouseEvent;
@@ -8,6 +7,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+
 
 
 public class Ocean extends Parent {
@@ -30,6 +30,7 @@ public class Ocean extends Parent {
         points = 0;
         shipShot = 0;
         shipsAlive = 5;
+
 
         for (int r = 0; r < 10; r++) {
             HBox row = new HBox();
@@ -208,8 +209,8 @@ public class Ocean extends Parent {
 
     public class Cell extends Rectangle{
         public int row, column ;
-        public boolean wasShot = false;
-        public Ship ship =null;
+        public boolean wasShot ;
+        public Ship ship;
 
         private Ocean ocean;
 
@@ -252,39 +253,5 @@ public class Ocean extends Parent {
     }
 }
 
-    /*public boolean isOccupied(int row, int column) { //if the given location contains a ship
-        System.out.println(ships[row][column].getType());
-        System.out.println(ships[row][column].health);
-        return ships[row][column].getSeats() != 1;
-    }
-
-    public boolean shootAt(int row, int column) {
-        if (ships[row][column].isAlive()) {//there is a ship
-            ships[row][column].health--;
-            if (!ships[row][column].isAlive()) {
-                points += ships[row][column].getBonus();
-                shipsAlive--;
-                shipSunk++;
-            } else {
-                points += ships[row][column].getPoints();
-            }
-            return true;
-        }
-        return false;
-    }
-
-     */
-
-
-    /*
-    int getShotsFired()
-Returns the number of shots fired (in this game).
-int getHitCount()
-Returns the number of hits recorded (in this game). All hits are counted, not just the first time a given square is hit.
-int getShipsSunk()
-Returns the number of ships sunk (in this game).
-    boolean isGameOver()
-Returns true if all ships have been sunk, otherwise false.
-     */
 
 
