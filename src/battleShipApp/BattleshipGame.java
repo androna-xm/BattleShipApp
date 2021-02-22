@@ -48,8 +48,10 @@ public class BattleshipGame extends Application{
             playerOcean = popupBox.getPlayerOcean();
             loaded = true; // the files are loaded so the game can start
             if(running) running = false; //so the game can restart when start button is pressed
-            playerInfo.setText("Player Info:\nActive Ships = "+playerOcean.shipsAlive +"\nPoints = "+playerOcean.points+ "\nSuccessful Shoots = "+ playerOcean.hitCount);
-            enemyInfo.setText("Enemy Info:\nActive Ships = "+enemyOcean.shipsAlive +"\nPoints = "+enemyOcean.points+ "\nSuccessful Shoots = "+ enemyOcean.hitCount);
+            playerInfo.setText("Player Info:\nActive Ships = "+playerOcean.shipsAlive +"\nPoints = "+enemyOcean.points
+                    +"\nTotal shots = "+enemyOcean.shotsFired + "\nSuccessful Shoots = "+ enemyOcean.hitCount);
+            enemyInfo.setText("Enemy Info:\nActive Ships = "+enemyOcean.shipsAlive +"\nPoints = "
+                    +playerOcean.points+"\nTotal shots = "+playerOcean.shotsFired +"\nSuccessful Shots = "+ playerOcean.hitCount);
         } );
         applicationMenu.getItems().add(load);
 
@@ -114,6 +116,18 @@ public class BattleshipGame extends Application{
 
     }
 
+    private void restart(){
+        running = false;
+        playerHistory.clear();
+        enemyHistory.clear();
+        playerOcean.restartOcean();
+        enemyOcean.restartOcean();
+        playerInfo.setText("Player Info:\nActive Ships = "+playerOcean.shipsAlive +"\nPoints = "+enemyOcean.points
+                +"\nTotal shots = "+enemyOcean.shotsFired + "\nSuccessful Shoots = "+ enemyOcean.hitCount);
+        enemyInfo.setText("Enemy Info:\nActive Ships = "+enemyOcean.shipsAlive +"\nPoints = "
+                +playerOcean.points+"\nTotal shots = "+playerOcean.shotsFired +"\nSuccessful Shots = "+ playerOcean.hitCount);
+    }
+
     private void playerMoves(Cell cell){
         if (cell.wasShot)
             return;
@@ -121,28 +135,35 @@ public class BattleshipGame extends Application{
             addToHistory(playerHistory,"("+cell.row +","+ cell.column +"),hit,"+cell.ship.getType());
         else
             addToHistory(playerHistory,"("+cell.row +","+ cell.column +"),miss");
-        playerInfo.setText("Player Info: \nActive Ships = "+playerOcean.shipsAlive +"\nPoints = "+enemyOcean.points+ "\nSuccessful Shoots = "+ enemyOcean.hitCount);
-        if (enemyOcean.shipsAlive == 0) {
-            //System.out.println("YOU WIN");
-            //System.exit(0);
-            AlertBox loseBox = new AlertBox();
-            loseBox.display("End Game", " You won !");
+
+        enemyOcean.shotsFired++;
+        playerInfo.setText("Player Info:\nActive Ships = " + playerOcean.shipsAlive + "\nPoints = " + enemyOcean.points
+                + "\nTotal shots = " + enemyOcean.shotsFired + "\nSuccessful Shoots = " + enemyOcean.hitCount);
+        if(enemyOcean.shotsFired ==40){
+            AlertBox winBox = new AlertBox();
+            if(playerOcean.points > enemyOcean.points ){
+                winBox.display("End Game","You completed 40 moves \n You lost");
+            }
+            else if(enemyOcean.points < playerOcean.points){
+                winBox.display("End Game", "You completed 40 moves \n You won");
+            }
+            else
+                winBox.display("End Game","You completed 40 moves \n Draw" );
             restart();
         }
         else {
-            enemyTurn = true;
-            enemyMove();
+
+            if (enemyOcean.shipsAlive == 0) {
+                AlertBox loseBox = new AlertBox();
+                loseBox.display("End Game", " You won !");
+                restart();
+            } else {
+                enemyTurn = true;
+                enemyMove();
+            }
         }
     }
-    private void restart(){
-        running = false;
-        playerHistory.clear();
-        enemyHistory.clear();
-        playerOcean.restartOcean();
-        enemyOcean.restartOcean();
-        playerInfo.setText("Player Info:\nActive Ships = "+playerOcean.shipsAlive +"\nPoints = "+playerOcean.points+ "\nSuccessful Shoots = "+ playerOcean.hitCount);
-        enemyInfo.setText("Enemy Info:\nActive Ships = "+enemyOcean.shipsAlive +"\nPoints = "+enemyOcean.points+ "\nSuccessful Shoots = "+ enemyOcean.hitCount);
-    }
+
     private void enemyMove() {
         while (enemyTurn) {
             if (smart) {
@@ -246,7 +267,6 @@ public class BattleshipGame extends Application{
             Cell cell = playerOcean.getCell(row, column);
 
             if (cell.wasShot) {// the enemy has already shot that shell of mine
-                System.out.println("wasShot");
                 row = prevr;
                 column = prevc;
                 continue;
@@ -305,17 +325,33 @@ public class BattleshipGame extends Application{
                 }
                 else smart = false;
             }
-            enemyInfo.setText("Enemy Info:\nActive Ships = "+enemyOcean.shipsAlive +"\nPoints = "+playerOcean.points+ "\nSuccessful Shoots = "+ playerOcean.hitCount);
+
 
             enemyTurn = false;
+            playerOcean.shotsFired++;
+            enemyInfo.setText("Enemy Info:\nActive Ships = " + enemyOcean.shipsAlive + "\nPoints = " + playerOcean.points +
+                    "\nTotal shots = " + playerOcean.shotsFired + "\nSuccessful Shots = " + playerOcean.hitCount);
+            if(playerOcean.shotsFired ==40){
+                AlertBox winBox = new AlertBox();
+                if(playerOcean.points > enemyOcean.points ){
+                    winBox.display("End Game","Enemy completed 40 moves \n You lost");
+                }
+                else if(enemyOcean.points < playerOcean.points){
+                    winBox.display("End Game", "Enemy completed 40 moves \n You won");
+                }
+                else
+                    winBox.display("End Game","Enemy completed 40 moves \n Draw" );
+                restart();
+            }
+
+
 
             if (playerOcean.shipsAlive == 0) {
-                //System.out.println("YOU LOSE");
-                //System.exit(0);
                 AlertBox loseBox = new AlertBox();
                 loseBox.display("End Game", " You lost !");
                 restart();
             }
+
 
         }
     }
