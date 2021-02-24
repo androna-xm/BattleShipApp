@@ -48,9 +48,9 @@ public class BattleshipGame extends Application{
             playerOcean = popupBox.getPlayerOcean();
             loaded = true; // the files are loaded so the game can start
             if(running) running = false; //so the game can restart when start button is pressed
-            playerInfo.setText("Player Info:\nActive Ships = "+playerOcean.shipsAlive +"\nPoints = "+enemyOcean.points
-                    +"\nTotal shots = "+enemyOcean.shotsFired + "\nSuccessful Shoots = "+ enemyOcean.hitCount);
-            enemyInfo.setText("Enemy Info:\nActive Ships = "+enemyOcean.shipsAlive +"\nPoints = "
+            playerInfo.setText("Active Ships = "+playerOcean.shipsAlive +"\nPoints = "+enemyOcean.points
+                    +"\nTotal shots = "+enemyOcean.shotsFired + "\nSuccessful Shots = "+ enemyOcean.hitCount);
+            enemyInfo.setText("Active Ships = "+enemyOcean.shipsAlive +"\nPoints = "
                     +playerOcean.points+"\nTotal shots = "+playerOcean.shotsFired +"\nSuccessful Shots = "+ playerOcean.hitCount);
         } );
         applicationMenu.getItems().add(load);
@@ -107,11 +107,11 @@ public class BattleshipGame extends Application{
         AlertBox turnBox = new AlertBox();
         if(turn == 1) {//enemy's turn
             enemyTurn = true;
-            turnBox.display("","Enemy plays first!");
+            turnBox.display("Start game","Enemy plays first!");
             enemyMove();
         }
         else{
-            turnBox.display("","You play first!");
+            turnBox.display("Start game","You play first!");
         }
 
     }
@@ -122,9 +122,9 @@ public class BattleshipGame extends Application{
         enemyHistory.clear();
         playerOcean.restartOcean();
         enemyOcean.restartOcean();
-        playerInfo.setText("Player Info:\nActive Ships = "+playerOcean.shipsAlive +"\nPoints = "+enemyOcean.points
-                +"\nTotal shots = "+enemyOcean.shotsFired + "\nSuccessful Shoots = "+ enemyOcean.hitCount);
-        enemyInfo.setText("Enemy Info:\nActive Ships = "+enemyOcean.shipsAlive +"\nPoints = "
+        playerInfo.setText("Active Ships = "+playerOcean.shipsAlive +"\nPoints = "+enemyOcean.points
+                +"\nTotal shots = "+enemyOcean.shotsFired + "\nSuccessful Shots = "+ enemyOcean.hitCount);
+        enemyInfo.setText("Active Ships = "+enemyOcean.shipsAlive +"\nPoints = "
                 +playerOcean.points+"\nTotal shots = "+playerOcean.shotsFired +"\nSuccessful Shots = "+ playerOcean.hitCount);
     }
 
@@ -137,25 +137,28 @@ public class BattleshipGame extends Application{
             addToHistory(playerHistory,"("+cell.row +","+ cell.column +"),miss");
 
         enemyOcean.shotsFired++;
-        playerInfo.setText("Player Info:\nActive Ships = " + playerOcean.shipsAlive + "\nPoints = " + enemyOcean.points
-                + "\nTotal shots = " + enemyOcean.shotsFired + "\nSuccessful Shoots = " + enemyOcean.hitCount);
+        playerInfo.setText("Active Ships = " + playerOcean.shipsAlive + "\nPoints = " + enemyOcean.points
+                + "\nTotal shots = " + enemyOcean.shotsFired + "\nSuccessful Shots = " + enemyOcean.hitCount);
         if(enemyOcean.shotsFired ==40){
             AlertBox winBox = new AlertBox();
             if(playerOcean.points > enemyOcean.points ){
-                winBox.display("End Game","You completed 40 moves \n You lost");
+                winBox.display("End Game","You completed 40 moves\nEnemy's points:"+playerOcean.points
+                        +"\nPlayer points:"+enemyOcean.points+"\nYou lost");
             }
-            else if(enemyOcean.points < playerOcean.points){
-                winBox.display("End Game", "You completed 40 moves \n You won");
+            else if(enemyOcean.points > playerOcean.points){
+                winBox.display("End Game", "You completed 40 moves\nEnemy's points:"+playerOcean.points +
+                        "\nPlayer's points:"+enemyOcean.points+"\nYou won");
             }
             else
-                winBox.display("End Game","You completed 40 moves \n Draw" );
+                winBox.display("End Game","You completed 40 moves\nEnemy's point's:"+playerOcean.points+
+                        "\nPlayer's points:"+enemyOcean.points+"\nDraw" );
             restart();
         }
         else {
 
             if (enemyOcean.shipsAlive == 0) {
                 AlertBox loseBox = new AlertBox();
-                loseBox.display("End Game", " You won !");
+                loseBox.display("End Game", "You sunk all the emeny's ships\nYou won !");
                 restart();
             } else {
                 enemyTurn = true;
@@ -329,26 +332,27 @@ public class BattleshipGame extends Application{
 
             enemyTurn = false;
             playerOcean.shotsFired++;
-            enemyInfo.setText("Enemy Info:\nActive Ships = " + enemyOcean.shipsAlive + "\nPoints = " + playerOcean.points +
+            enemyInfo.setText("Active Ships = " + enemyOcean.shipsAlive + "\nPoints = " + playerOcean.points +
                     "\nTotal shots = " + playerOcean.shotsFired + "\nSuccessful Shots = " + playerOcean.hitCount);
             if(playerOcean.shotsFired ==40){
                 AlertBox winBox = new AlertBox();
                 if(playerOcean.points > enemyOcean.points ){
-                    winBox.display("End Game","Enemy completed 40 moves \n You lost");
+                    winBox.display("End Game","Enemy completed 40 moves\nEnemy's points:"+playerOcean.points
+                            +"\nPlayer points:"+enemyOcean.points+"\nYou lost");
                 }
-                else if(enemyOcean.points < playerOcean.points){
-                    winBox.display("End Game", "Enemy completed 40 moves \n You won");
+                else if(enemyOcean.points > playerOcean.points){
+                    winBox.display("End Game", "Enemy completed 40 moves\nEnemy's points:"+playerOcean.points
+                            +"\nPlayer points:"+enemyOcean.points+"\nYou won");
                 }
                 else
-                    winBox.display("End Game","Enemy completed 40 moves \n Draw" );
+                    winBox.display("End Game","Enemy completed 40 moves\nEnemy's points:"+playerOcean.points
+                            +"\nPlayer points:"+enemyOcean.points+"\nDraw");
                 restart();
             }
 
-
-
             if (playerOcean.shipsAlive == 0) {
                 AlertBox loseBox = new AlertBox();
-                loseBox.display("End Game", " You lost !");
+                loseBox.display("End Game", "ALl your ships are sunk\nYou lost !");
                 restart();
             }
 
@@ -382,16 +386,26 @@ public class BattleshipGame extends Application{
 
         playerOcean = new Ocean(false, event -> {  });
 
-        HBox infoBox = new HBox(20);
+        /*HBox infoBox = new HBox(20);
         infoBox.getChildren().addAll(playerInfo,enemyInfo);
         infoBox.setAlignment(Pos.CENTER);
+
+         */
+        GridPane infopane = new GridPane();
+        infopane.setHgap(50);
+        infopane.setVgap(10);
+        infopane.add(new Label("Player Info:"), 0, 0);
+        infopane.add(playerInfo, 0, 1);
+        infopane.add(new Label("Enemy Info:"), 1, 0);
+        infopane.add(enemyInfo, 1, 1);
+        infopane.setAlignment(Pos.CENTER);
 
 
         //Set the Board with the Oceans
         HBox hBox = new HBox(50, setBoard(playerOcean), setBoard(enemyOcean));
         hBox.setAlignment(Pos.CENTER);
 
-        VBox vbox = new VBox(50,infoBox,hBox,shootArea());
+        VBox vbox = new VBox(50,infopane,hBox,new Label("Define the row and the column of your next shot"),shootArea());
         vbox.setAlignment(Pos.CENTER);
 
         root.setTop(createMenu());
