@@ -1,12 +1,17 @@
 package battleShipApp;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.Random;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -45,6 +50,7 @@ public class BattleshipGame extends Application{
             PopupBox popupBox = new PopupBox(playerOcean,enemyOcean,running);
             loaded = popupBox.display("Scenario-ID", "Define your scenarios");
             //loaded = true; // the files are loaded so the game can start if complete was pushed
+            System.out.println(loaded);
             if(loaded){
                 enemyOcean = popupBox.getEnemyOcean();
                 playerOcean = popupBox.getPlayerOcean();
@@ -374,7 +380,7 @@ public class BattleshipGame extends Application{
         history.add(str);
     }
 
-    public void start(Stage primaryStage){
+    public void start(Stage primaryStage) throws FileNotFoundException {
         window = primaryStage;
         window.setTitle("Medialab Battleship");
         window.setOnCloseRequest(e-> {
@@ -383,7 +389,7 @@ public class BattleshipGame extends Application{
         });
 
         BorderPane root = new BorderPane();
-        root.setPrefSize(800,800);
+        //root.setPrefSize(2000,800);
 
         enemyOcean = new Ocean(true, event -> {
             if(running) {//cant shoot if the game hasnt started
@@ -400,7 +406,7 @@ public class BattleshipGame extends Application{
 
          */
         GridPane infopane = new GridPane();
-        infopane.setHgap(300);
+        infopane.setHgap(520);
         infopane.setVgap(10);
         infopane.add(new Label("Player Info:"), 1, 0);
         infopane.add(playerInfo, 1, 1);
@@ -410,8 +416,9 @@ public class BattleshipGame extends Application{
 
 
         //Set the Board with the Oceans
-        HBox hBox = new HBox(50, setBoard(playerOcean), setBoard(enemyOcean));
+        HBox hBox = new HBox(250, setBoard(playerOcean), setBoard(enemyOcean));
         hBox.setAlignment(Pos.CENTER);
+
 
         VBox vbox = new VBox(50,infopane,hBox,new Label("Define the row and the column of your next shot"),shootArea());
         vbox.setAlignment(Pos.CENTER);
@@ -419,19 +426,29 @@ public class BattleshipGame extends Application{
         root.setTop(createMenu());
         root.setCenter(vbox);
 
-        Scene scene = new Scene(root, 900, 900);  //createContent returns root
-        //Scene scene = new Scene(root);
+
+        Scene scene = new Scene(root, 1500, 1000);  //createContent returns root
+
+        FileInputStream input = new FileInputStream("medialab/images/shoot.jpg");
+        Image image = new Image(input);
+        BackgroundImage backgroundimage = new BackgroundImage(image,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.DEFAULT,
+                new BackgroundSize(1.0,1.0,true,true,true,true));
+        Background background = new Background(backgroundimage);
+        vbox.setBackground(background);
 
         window.setScene(scene);
         window.show();
     }
 
-    public GridPane shootArea(){
+    public GridPane shootArea()  {
         //Input field for player to shoot
         GridPane gridpane = new GridPane();
         gridpane.setHgap(10);
         gridpane.setVgap(10);
-        //gridpane.add(new Label("Define the row and the column of your next shot"),1,0);
+        //gridpane.setId("pane");
         gridpane.add(new Label("Row:"), 0, 1);
         ChoiceBox<Integer> rowChoice = new ChoiceBox<Integer>();
         rowChoice.getItems().addAll(0,1,2,3,4,5,6,7,8,9);
@@ -447,6 +464,7 @@ public class BattleshipGame extends Application{
                 getChoice(rowChoice,colChoice);
         });
         gridpane.setAlignment(Pos.CENTER);
+
         return gridpane;
     }
 

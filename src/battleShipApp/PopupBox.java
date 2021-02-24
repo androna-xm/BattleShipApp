@@ -82,6 +82,7 @@ public class PopupBox {
 
 
     public  boolean display(String title, String message){
+        loaded = false;
         Stage window = new Stage();
 
         window.initModality(Modality.APPLICATION_MODAL);
