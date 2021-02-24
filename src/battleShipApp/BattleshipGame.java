@@ -43,15 +43,17 @@ public class BattleshipGame extends Application{
         MenuItem load = new MenuItem("Load...");
         load.setOnAction(event -> {
             PopupBox popupBox = new PopupBox(playerOcean,enemyOcean,running);
-            popupBox.display("Scenario-ID", "Define your scenarios");
-            enemyOcean = popupBox.getEnemyOcean();
-            playerOcean = popupBox.getPlayerOcean();
-            loaded = true; // the files are loaded so the game can start
-            if(running) running = false; //so the game can restart when start button is pressed
-            playerInfo.setText("Active Ships = "+playerOcean.shipsAlive +"\nPoints = "+enemyOcean.points
-                    +"\nTotal shots = "+enemyOcean.shotsFired + "\nSuccessful Shots = "+ enemyOcean.hitCount);
-            enemyInfo.setText("Active Ships = "+enemyOcean.shipsAlive +"\nPoints = "
-                    +playerOcean.points+"\nTotal shots = "+playerOcean.shotsFired +"\nSuccessful Shots = "+ playerOcean.hitCount);
+            loaded = popupBox.display("Scenario-ID", "Define your scenarios");
+            //loaded = true; // the files are loaded so the game can start if complete was pushed
+            if(loaded){
+                enemyOcean = popupBox.getEnemyOcean();
+                playerOcean = popupBox.getPlayerOcean();
+                if(running) running = false; //so the game can restart when start button is pressed
+                playerInfo.setText("Active Ships = "+playerOcean.shipsAlive +"\nPoints = "+enemyOcean.points
+                        +"\nTotal shots = "+enemyOcean.shotsFired + "\nSuccessful Shots = "+ enemyOcean.hitCount);
+                enemyInfo.setText("Active Ships = "+enemyOcean.shipsAlive +"\nPoints = "
+                        +playerOcean.points+"\nTotal shots = "+playerOcean.shotsFired +"\nSuccessful Shots = "+ playerOcean.hitCount);
+            }
         } );
         applicationMenu.getItems().add(load);
 
@@ -114,6 +116,11 @@ public class BattleshipGame extends Application{
             turnBox.display("Start game","You play first!");
         }
 
+    }
+    private void closeProgram(){
+        boolean answer = ConfirmBox.display("Exit", "Are you sure you want to exit?");
+        if(answer)
+            window.close();
     }
 
     private void restart(){
@@ -482,11 +489,7 @@ public class BattleshipGame extends Application{
         return total;
     }
 
-    private void closeProgram(){
-        boolean answer = ConfirmBox.display("Exit", "Are you sure you want to exit?");
-        if(answer)
-            window.close();
-    }
+
 
     public static void main(String[] args)  { launch(args);}
 }

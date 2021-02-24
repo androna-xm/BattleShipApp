@@ -19,6 +19,7 @@ import java.util.Iterator;
 public class PopupBox {
     boolean placed, player_check, enemy_check, running;
     Ocean playerOcean,enemyOcean;
+    static boolean loaded;
 
     PopupBox(Ocean playerOcean, Ocean enemyOcean, boolean running){
         this.playerOcean = playerOcean;
@@ -80,7 +81,7 @@ public class PopupBox {
     }
 
 
-    public  void display(String title, String message){
+    public  boolean display(String title, String message){
         Stage window = new Stage();
 
         window.initModality(Modality.APPLICATION_MODAL);
@@ -108,8 +109,10 @@ public class PopupBox {
 
         Button btn = new Button("Complete");
         btn.setOnAction(e -> {
-            if(enemy_check && player_check)
+            if(enemy_check && player_check) {
+                loaded = true;
                 window.close();
+            }
         });
         btn.setAlignment(Pos.CENTER);
 
@@ -160,6 +163,8 @@ public class PopupBox {
         Scene scene = new Scene(layout);
         window.setScene(scene);
         window.showAndWait();
+
+        return loaded;
 
 
 
