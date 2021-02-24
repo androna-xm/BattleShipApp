@@ -117,6 +117,7 @@ public class BattleshipGame extends Application{
         }
 
     }
+
     private void closeProgram(){
         boolean answer = ConfirmBox.display("Exit", "Are you sure you want to exit?");
         if(answer)
@@ -399,12 +400,12 @@ public class BattleshipGame extends Application{
 
          */
         GridPane infopane = new GridPane();
-        infopane.setHgap(50);
+        infopane.setHgap(300);
         infopane.setVgap(10);
-        infopane.add(new Label("Player Info:"), 0, 0);
-        infopane.add(playerInfo, 0, 1);
-        infopane.add(new Label("Enemy Info:"), 1, 0);
-        infopane.add(enemyInfo, 1, 1);
+        infopane.add(new Label("Player Info:"), 1, 0);
+        infopane.add(playerInfo, 1, 1);
+        infopane.add(new Label("Enemy Info:"), 0, 0);
+        infopane.add(enemyInfo, 0, 1);
         infopane.setAlignment(Pos.CENTER);
 
 
