@@ -201,7 +201,7 @@ public class Ocean extends Parent {
                 if(getCell(i,j).ship != null)
                     getCell(i,j).ship = null;
                 getCell(i,j).wasShot = false;
-                getCell(i,j).setFill(Color.LIGHTGRAY);
+                getCell(i,j).setFill(Color.ALICEBLUE);
                 getCell(i,j).setStroke(Color.BLACK);
             }
         }
@@ -221,7 +221,7 @@ public class Ocean extends Parent {
             this.ocean = ocean;
             wasShot = false;
             ship = null;
-            setFill(Color.LIGHTGRAY);
+            setFill(Color.ALICEBLUE);
             setStroke(Color.BLACK);
         }
 

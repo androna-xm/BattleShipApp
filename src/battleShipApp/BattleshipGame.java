@@ -408,9 +408,15 @@ public class BattleshipGame extends Application{
         GridPane infopane = new GridPane();
         infopane.setHgap(520);
         infopane.setVgap(10);
-        infopane.add(new Label("Player Info:"), 1, 0);
+        Label plLabel = new Label("Player Info:");
+        //plLabel.getStyleClass().add("label-white");
+        plLabel.setStyle("-fx-text-fill: aliceblue ");
+        infopane.add(plLabel, 1, 0);
         infopane.add(playerInfo, 1, 1);
-        infopane.add(new Label("Enemy Info:"), 0, 0);
+        Label enLabel = new Label("Enemy Info:");
+        //enLabel.getStyleClass().add("label-white");
+        enLabel.setStyle("-fx-text-fill: aliceblue ");
+        infopane.add(enLabel, 0, 0);
         infopane.add(enemyInfo, 0, 1);
         infopane.setAlignment(Pos.CENTER);
 
@@ -419,17 +425,27 @@ public class BattleshipGame extends Application{
         HBox hBox = new HBox(250, setBoard(playerOcean), setBoard(enemyOcean));
         hBox.setAlignment(Pos.CENTER);
 
+        Label mine = new Label("Player's Ocean");
+        mine.setStyle("-fx-text-fill: aliceblue ");
+        Label yours = new Label("Enemy's Ocean");
+        yours.setStyle("-fx-text-fill: aliceblue ");
+        HBox hBox2 = new HBox(520, mine,yours);
+        hBox2.setAlignment(Pos.CENTER);
 
-        VBox vbox = new VBox(50,infopane,hBox,new Label("Define the row and the column of your next shot"),shootArea());
+        Label title = new Label("Define the row and the column of your next shot");
+        title.setStyle("-fx-text-fill: aliceblue ");
+        VBox vbox = new VBox(50,infopane,hBox,hBox2,title,shootArea());
         vbox.setAlignment(Pos.CENTER);
 
         root.setTop(createMenu());
         root.setCenter(vbox);
 
 
-        Scene scene = new Scene(root, 1500, 1000);  //createContent returns root
+        Scene scene = new Scene(root, 1200, 800);  //createContent returns root
+        //scene.getStylesheets().add("styleMe.css");
+        scene.getStylesheets().add(getClass().getResource("styleMe.css").toExternalForm());
 
-        FileInputStream input = new FileInputStream("medialab/images/shoot.jpg");
+        FileInputStream input = new FileInputStream("medialab/images/ocean2.png");
         Image image = new Image(input);
         BackgroundImage backgroundimage = new BackgroundImage(image,
                 BackgroundRepeat.NO_REPEAT,
@@ -480,7 +496,7 @@ public class BattleshipGame extends Application{
         HBox columns = new HBox();
         for(int c =0; c<10; c++){
             Rectangle rec = new Rectangle(30,30);
-            rec.setFill(Color.WHITE);
+            rec.setFill(Color.ALICEBLUE);
             rec.setStroke(Color.BLACK);
             Text num = new Text(String.valueOf(c));
             StackPane stack = new StackPane();
@@ -490,7 +506,7 @@ public class BattleshipGame extends Application{
         VBox rows = new VBox();
         for(int r=0; r<11; r++){
             Rectangle rec = new Rectangle(30,30);
-            rec.setFill(Color.WHITE);
+            rec.setFill(Color.ALICEBLUE);
             rec.setStroke(Color.BLACK);
             if(r == 0) {
                 rows.getChildren().add(rec);
