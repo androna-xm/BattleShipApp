@@ -105,13 +105,14 @@ public class Ocean extends Parent {
         }
 
     }
+
     private void paintShips(){
         for (int i=0; i<10; i++){
             for(int j =0; j<10; j++){
                 Cell cell =getCell(i,j);
                 if(cell.ship != null ){
-                    cell.setFill(Color.WHITE);
-                    cell.setStroke(Color.GREEN);
+                    cell.setFill(Color.BLUE);
+                    cell.setStroke(Color.AQUAMARINE);
                 }
             }
         }

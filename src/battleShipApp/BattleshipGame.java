@@ -59,6 +59,8 @@ public class BattleshipGame extends Application{
                         +"\nTotal shots = "+enemyOcean.shotsFired + "\nSuccessful Shots = "+ enemyOcean.hitCount);
                 enemyInfo.setText("Active Ships = "+enemyOcean.shipsAlive +"\nPoints = "
                         +playerOcean.points+"\nTotal shots = "+playerOcean.shotsFired +"\nSuccessful Shots = "+ playerOcean.hitCount);
+                playerInfo.getStyleClass().add("label-white");
+                enemyInfo.getStyleClass().add("label-white");
             }
         } );
         applicationMenu.getItems().add(load);
@@ -140,6 +142,8 @@ public class BattleshipGame extends Application{
                 +"\nTotal shots = "+enemyOcean.shotsFired + "\nSuccessful Shots = "+ enemyOcean.hitCount);
         enemyInfo.setText("Active Ships = "+enemyOcean.shipsAlive +"\nPoints = "
                 +playerOcean.points+"\nTotal shots = "+playerOcean.shotsFired +"\nSuccessful Shots = "+ playerOcean.hitCount);
+        playerInfo.getStyleClass().add("label-white");
+        enemyInfo.getStyleClass().add("label-white");
     }
 
     private void playerMoves(Cell cell){
@@ -153,6 +157,7 @@ public class BattleshipGame extends Application{
         enemyOcean.shotsFired++;
         playerInfo.setText("Active Ships = " + playerOcean.shipsAlive + "\nPoints = " + enemyOcean.points
                 + "\nTotal shots = " + enemyOcean.shotsFired + "\nSuccessful Shots = " + enemyOcean.hitCount);
+        playerInfo.getStyleClass().add("label-white");
         if(enemyOcean.shotsFired ==40){
             AlertBox winBox = new AlertBox();
             if(playerOcean.points > enemyOcean.points ){
@@ -409,13 +414,13 @@ public class BattleshipGame extends Application{
         infopane.setHgap(520);
         infopane.setVgap(10);
         Label plLabel = new Label("Player Info:");
-        //plLabel.getStyleClass().add("label-white");
-        plLabel.setStyle("-fx-text-fill: aliceblue ");
+        plLabel.getStyleClass().add("label-white");
+        //plLabel.setStyle("-fx-text-fill: aliceblue ");
         infopane.add(plLabel, 1, 0);
         infopane.add(playerInfo, 1, 1);
         Label enLabel = new Label("Enemy Info:");
-        //enLabel.getStyleClass().add("label-white");
-        enLabel.setStyle("-fx-text-fill: aliceblue ");
+        enLabel.getStyleClass().add("label-white");
+        //enLabel.setStyle("-fx-text-fill: aliceblue ");
         infopane.add(enLabel, 0, 0);
         infopane.add(enemyInfo, 0, 1);
         infopane.setAlignment(Pos.CENTER);
@@ -426,15 +431,18 @@ public class BattleshipGame extends Application{
         hBox.setAlignment(Pos.CENTER);
 
         Label mine = new Label("Player's Ocean");
-        mine.setStyle("-fx-text-fill: aliceblue ");
+        //mine.setStyle("-fx-text-fill: aliceblue ");
+        mine.getStyleClass().add("label-white");
         Label yours = new Label("Enemy's Ocean");
-        yours.setStyle("-fx-text-fill: aliceblue ");
+        //yours.setStyle("-fx-text-fill: aliceblue ");
+        yours.getStyleClass().add("label-white");
         HBox hBox2 = new HBox(520, mine,yours);
         hBox2.setAlignment(Pos.CENTER);
 
         Label title = new Label("Define the row and the column of your next shot");
-        title.setStyle("-fx-text-fill: aliceblue ");
-        VBox vbox = new VBox(50,infopane,hBox,hBox2,title,shootArea());
+        //title.setStyle("-fx-text-fill: aliceblue ");
+        title.getStyleClass().add("label-white");
+        VBox vbox = new VBox(20,infopane,hBox,hBox2,title,shootArea());
         vbox.setAlignment(Pos.CENTER);
 
         root.setTop(createMenu());
@@ -445,7 +453,7 @@ public class BattleshipGame extends Application{
         //scene.getStylesheets().add("styleMe.css");
         scene.getStylesheets().add(getClass().getResource("styleMe.css").toExternalForm());
 
-        FileInputStream input = new FileInputStream("medialab/images/ocean2.png");
+        FileInputStream input = new FileInputStream("medialab/images/shoot.jpg");
         Image image = new Image(input);
         BackgroundImage backgroundimage = new BackgroundImage(image,
                 BackgroundRepeat.NO_REPEAT,
@@ -465,11 +473,15 @@ public class BattleshipGame extends Application{
         gridpane.setHgap(10);
         gridpane.setVgap(10);
         //gridpane.setId("pane");
-        gridpane.add(new Label("Row:"), 0, 1);
+        Label row = new Label("Row:");
+        row.getStyleClass().add("label-white");
+        gridpane.add(row, 0, 1);
         ChoiceBox<Integer> rowChoice = new ChoiceBox<Integer>();
         rowChoice.getItems().addAll(0,1,2,3,4,5,6,7,8,9);
         gridpane.add(rowChoice,1,1);
-        gridpane.add(new Label("Column:"), 2,1);
+        Label col = new Label("Column:");
+        col.getStyleClass().add("label-white");
+        gridpane.add(col, 2,1);
         ChoiceBox<Integer> colChoice = new ChoiceBox<Integer>();
         colChoice.getItems().addAll(0,1,2,3,4,5,6,7,8,9);
         gridpane.add(colChoice,3,1);

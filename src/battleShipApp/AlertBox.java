@@ -10,18 +10,18 @@ import javafx.stage.*;
 public class AlertBox {
 
     public static void display(String title, String message){
-        Stage awindow = new Stage();
+        Stage window = new Stage();
 
-        awindow.initModality(Modality.APPLICATION_MODAL);
-        awindow.setTitle(title);
-        awindow.setMinHeight(125);
-        awindow.setMinWidth(250);
+        window.initModality(Modality.APPLICATION_MODAL);
+        window.setTitle(title);
+        window.setMinHeight(145);
+        window.setMinWidth(250);
 
         Label label = new Label();
         label.setText(message);
 
         Button ok = new Button("Ok");
-        ok.setOnAction(e-> awindow.close());
+        ok.setOnAction(e-> window.close());
 
 
         VBox layout = new VBox(10);
@@ -31,9 +31,9 @@ public class AlertBox {
 
 
         Scene scene = new Scene(layout);
-        awindow.setScene(scene);
-        awindow.setResizable(false);
-        awindow.showAndWait();
+        window.setScene(scene);
+        window.setResizable(false);
+        window.showAndWait();
 
     }
 }
