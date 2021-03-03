@@ -5,6 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.*;
@@ -105,24 +106,6 @@ public class PopupBox {
         enemyTextArea.setPrefColumnCount(7);
         enemyTextArea.setPrefRowCount(5);
 
-
-        VBox vb1 = new VBox();
-        vb1.getChildren().addAll( label, playerScenario , playerTextArea);
-        vb1.setSpacing(10);
-
-        Button btn = new Button("Complete");
-        btn.setOnAction(e -> {
-            if(enemy_check && player_check) {
-                loaded = true;
-                window.close();
-            }
-        });
-        btn.setAlignment(Pos.CENTER);
-
-        VBox vb2 = new VBox();
-        vb2.getChildren().addAll(enemyScenario, enemyTextArea,btn);
-        vb2.setSpacing(10);
-
         Button btnPlayer = new Button("Player Check");
         btnPlayer.setOnAction(event -> {
             saveToFile(playerTextArea, "medialab/player_SCENARIO-ID.txt");
@@ -156,22 +139,29 @@ public class PopupBox {
             }
 
         });
-
-        HBox hb1 = new HBox(10);
-        hb1.getChildren().addAll(vb1,btnPlayer);
-        hb1.setAlignment(Pos.CENTER);
-
-        HBox hb2 = new HBox(10);
-        hb2.getChildren().addAll(vb2,btnEnemy);
-        hb2.setAlignment(Pos.CENTER);
-
+        Button btn = new Button("Complete");
+        btn.setOnAction(e -> {
+            if(enemy_check && player_check) {
+                loaded = true;
+                window.close();
+            }
+        });
 
 
-        VBox layout = new VBox();
-        layout.getChildren().addAll(hb1, hb2);
-        layout.setSpacing(20);
+        GridPane gridpane = new GridPane();
+        gridpane.setHgap(10);
+        gridpane.setVgap(10);
+        gridpane.add(label,1,0);
+        gridpane.add(playerScenario,0,1);
+        gridpane.add(playerTextArea,1,1);
+        gridpane.add(btnPlayer,2,1);
+        gridpane.add(enemyScenario,0,2);
+        gridpane.add(enemyTextArea,1,2);
+        gridpane.add(btnEnemy,2,2);
+        gridpane.add(btn, 1,3);
+        gridpane.setAlignment(Pos.CENTER);
 
-        Scene scene = new Scene(layout);
+        Scene scene = new Scene(gridpane);
         window.setScene(scene);
         window.showAndWait();
 

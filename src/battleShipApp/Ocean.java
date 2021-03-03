@@ -2,12 +2,16 @@ package battleShipApp;
 
 import javafx.event.EventHandler;
 import javafx.scene.Parent;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 
 public class Ocean extends Parent {
@@ -30,12 +34,21 @@ public class Ocean extends Parent {
         points = 0;
         shipShot = 0;
         shipsAlive = 5;
-
+        FileInputStream input1 = null;
+        FileInputStream input2 = null;
+        try {
+            input1 = new FileInputStream("medialab/images/explosion.png");
+            input2 = new FileInputStream("medialab/images/wave.png");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        Image img1 = new Image(input1);
+        Image img2 = new Image(input2);
 
         for (int r = 0; r < 10; r++) {
             HBox row = new HBox();
             for (int col = 0; col < 10; col++) {
-                Cell c = new Cell(r,col, this);
+                Cell c = new Cell(r,col, this, img1, img2);
                 if(this.enemy)
                     c.setOnMouseClicked(handler); // when we click the mouse on a cell o handler is defined
                 row.getChildren().add(c);
@@ -213,14 +226,17 @@ public class Ocean extends Parent {
         public int row, column ;
         public boolean wasShot ;
         public Ship ship;
+        public Image img1,img2;
 
         Ocean ocean;
 
-        public Cell(int row, int column, Ocean ocean) {
+        public Cell(int row, int column, Ocean ocean, Image img1, Image img2) {
             super(30, 30);
             this.row = row;
             this.column = column;
             this.ocean = ocean;
+            this.img1 = img1;
+            this.img2 = img2;
             wasShot = false;
             ship = null;
             //setFill(Color.ALICEBLUE);
@@ -230,14 +246,15 @@ public class Ocean extends Parent {
 
         public boolean shoot() {
             wasShot = true;
-            setFill(Color.BLACK);
-
+            //setFill(Color.BLACK);
+            setFill(new ImagePattern(img2));
             if (ship != null) {
                 ship.health --;
                 hitCount++;
                 if(ship.firstShot()) shipShot++;
                 points+= ship.getPoints();
-                setFill(Color.RED);
+                setFill(new ImagePattern(img1));
+                //setFill(Color.RED);
                 if (!ship.isAlive()) {
                     points += ship.getBonus();
                     shipsAlive --;
