@@ -3,9 +3,13 @@ package battleShipApp;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.*;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 
 public class ConfirmBox {
@@ -18,6 +22,14 @@ public class ConfirmBox {
         window.setTitle(title);
         window.setMinHeight(125);
         window.setMinWidth(250);
+        FileInputStream input = null;
+        try {
+            input = new FileInputStream("medialab/images/icon.jpeg");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        Image image = new Image(input);
+        window.getIcons().add(image);
 
         Label label = new Label();
         label.setText(message);

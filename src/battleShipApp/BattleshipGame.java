@@ -5,9 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.Random;
 import javafx.application.Application;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -25,21 +23,32 @@ public class BattleshipGame extends Application{
     private Ocean enemyOcean, playerOcean;
     private boolean enemyTurn,smart,horiz,vert,random_smart, running,loaded;
     private int row, column, prevr, prevc,left, right, up, down, prevleft,prevright, prevup, prevdown;
-    private Random random = new Random();
+    private final Random random = new Random();
     Stage window;
-    LinkedList<String> playerHistory = new LinkedList<String>();//to store the 5 last coordinates,with their results
-    LinkedList<String> enemyHistory = new LinkedList<String>();
+    LinkedList<String> playerHistory = new LinkedList<>();//to store the 5 last coordinates,with their results
+    LinkedList<String> enemyHistory = new LinkedList<>();
     Label playerInfo = new Label();
     Label enemyInfo = new Label();
 
-    private MenuBar createMenu(){
+    private MenuBar createMenu() throws FileNotFoundException {
 
         Menu applicationMenu = new Menu("_Application");
+        FileInputStream input = new FileInputStream("medialab/images/icon1.png");
+        Image image = new Image(input);
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(25);
+        imageView.setFitHeight(25);
+
+        applicationMenu.setGraphic(imageView);
 
         MenuItem start = new MenuItem("Start");
         start.setOnAction(event -> {
             if(loaded) { //push the button only if the files have been loaded
-                startGame();
+                try {
+                    startGame();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
                 loaded = false; // so the button start cant be pushed again while playing
             }
         });
@@ -48,9 +57,11 @@ public class BattleshipGame extends Application{
         MenuItem load = new MenuItem("Load...");
         load.setOnAction(event -> {
             PopupBox popupBox = new PopupBox(playerOcean,enemyOcean,running);
-            loaded = popupBox.display("Scenario-ID", "Define your scenarios");
-            //loaded = true; // the files are loaded so the game can start if complete was pushed
-            System.out.println(loaded);
+            try {
+                loaded = popupBox.display("Scenario-ID", "Define your scenarios");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
             if(loaded){
                 enemyOcean = popupBox.getEnemyOcean();
                 playerOcean = popupBox.getPlayerOcean();
@@ -73,7 +84,13 @@ public class BattleshipGame extends Application{
         applicationMenu.getItems().add(exit);
 
         //Menu “Details”
-        Menu detailsMenu = new Menu("Details");
+        Menu detailsMenu = new Menu("_Details");
+        FileInputStream input2 = new FileInputStream("medialab/images/Cannon.png");
+        Image image2 = new Image(input2);
+        ImageView imageView2 = new ImageView(image2);
+        imageView2.setFitWidth(25);
+        imageView2.setFitHeight(25);
+        detailsMenu.setGraphic(imageView2);
 
         MenuItem enemyShips = new MenuItem("Enemy Ships...");
         enemyShips.setOnAction(event -> {
@@ -82,7 +99,11 @@ public class BattleshipGame extends Application{
                 int enemyShipsSunk = enemyOcean.shipSunk;
                 int enemyShipsShot = enemyOcean.shipShot;
                 int enemyShipsHealthy = enemyOcean.shipsAlive - enemyShipsShot;
-                alertBox.display("Enemy Ships", "Alive: " + enemyShipsHealthy + "\nShot: " + enemyShipsShot + "\nSunk: " + enemyShipsSunk);
+                try {
+                    alertBox.display("Enemy Ships", "Alive: " + enemyShipsHealthy + "\nShot: " + enemyShipsShot + "\nSunk: " + enemyShipsSunk);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         });
         detailsMenu.getItems().add(enemyShips);
@@ -111,7 +132,7 @@ public class BattleshipGame extends Application{
         return menubar;
     }
 
-    private void startGame() {
+    private void startGame() throws FileNotFoundException {
         running = true;
         int turn = random.nextInt(2);
         AlertBox turnBox = new AlertBox();
@@ -146,7 +167,7 @@ public class BattleshipGame extends Application{
         enemyInfo.getStyleClass().add("label-white");
     }
 
-    private void playerMoves(Cell cell){
+    private void playerMoves(Cell cell) throws FileNotFoundException {
         if (cell.wasShot)
             return;
         if(cell.shoot())
@@ -177,7 +198,7 @@ public class BattleshipGame extends Application{
 
             if (enemyOcean.shipsAlive == 0) {
                 AlertBox loseBox = new AlertBox();
-                loseBox.display("End Game", "You sunk all the emeny's ships\nYou won !");
+                loseBox.display("End Game", "You sunk all the enemy's ships\nYou won !");
                 restart();
             } else {
                 enemyTurn = true;
@@ -186,7 +207,7 @@ public class BattleshipGame extends Application{
         }
     }
 
-    private void enemyMove() {
+    private void enemyMove() throws FileNotFoundException {
         while (enemyTurn) {
             if (smart) {
                 if (horiz) {
@@ -388,6 +409,9 @@ public class BattleshipGame extends Application{
     public void start(Stage primaryStage) throws FileNotFoundException {
         window = primaryStage;
         window.setTitle("Medialab Battleship");
+        FileInputStream input3 = new FileInputStream("medialab/images/icon.jpeg");
+        Image image3 = new Image(input3);
+        window.getIcons().add(image3);
         window.setOnCloseRequest(e-> {
             e.consume();
             closeProgram();
@@ -399,28 +423,25 @@ public class BattleshipGame extends Application{
         enemyOcean = new Ocean(true, event -> {
             if(running) {//cant shoot if the game hasnt started
                 Cell cell = (Cell) event.getSource(); //the cell that the user clicked to shoot
-                playerMoves(cell);
+                try {
+                    playerMoves(cell);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
         playerOcean = new Ocean(false, event -> {  });
 
-        /*HBox infoBox = new HBox(20);
-        infoBox.getChildren().addAll(playerInfo,enemyInfo);
-        infoBox.setAlignment(Pos.CENTER);
-
-         */
         GridPane infopane = new GridPane();
         infopane.setHgap(520);
         infopane.setVgap(10);
         Label plLabel = new Label("Player Info:");
         plLabel.getStyleClass().add("label-white");
-        //plLabel.setStyle("-fx-text-fill: aliceblue ");
         infopane.add(plLabel, 1, 0);
         infopane.add(playerInfo, 1, 1);
         Label enLabel = new Label("Enemy Info:");
         enLabel.getStyleClass().add("label-white");
-        //enLabel.setStyle("-fx-text-fill: aliceblue ");
         infopane.add(enLabel, 0, 0);
         infopane.add(enemyInfo, 0, 1);
         infopane.setAlignment(Pos.CENTER);
@@ -431,16 +452,13 @@ public class BattleshipGame extends Application{
         hBox.setAlignment(Pos.CENTER);
 
         Label mine = new Label("Player's Ocean");
-        //mine.setStyle("-fx-text-fill: aliceblue ");
         mine.getStyleClass().add("label-white");
         Label yours = new Label("Enemy's Ocean");
-        //yours.setStyle("-fx-text-fill: aliceblue ");
         yours.getStyleClass().add("label-white");
         HBox hBox2 = new HBox(520, mine,yours);
         hBox2.setAlignment(Pos.CENTER);
 
         Label title = new Label("Define the row and the column of your next shot");
-        //title.setStyle("-fx-text-fill: aliceblue ");
         title.getStyleClass().add("label-white");
         VBox vbox = new VBox(20,infopane,hBox,hBox2,title,shootArea());
         vbox.setAlignment(Pos.CENTER);
@@ -450,7 +468,6 @@ public class BattleshipGame extends Application{
 
 
         Scene scene = new Scene(root, 1200, 800);  //createContent returns root
-        //scene.getStylesheets().add("styleMe.css");
         scene.getStylesheets().add(getClass().getResource("styleMe.css").toExternalForm());
 
         FileInputStream input = new FileInputStream("medialab/images/shoot.jpg");
@@ -472,31 +489,35 @@ public class BattleshipGame extends Application{
         GridPane gridpane = new GridPane();
         gridpane.setHgap(10);
         gridpane.setVgap(10);
-        //gridpane.setId("pane");
         Label row = new Label("Row:");
         row.getStyleClass().add("label-white");
         gridpane.add(row, 0, 1);
-        ChoiceBox<Integer> rowChoice = new ChoiceBox<Integer>();
+        ChoiceBox<Integer> rowChoice = new ChoiceBox<>();
         rowChoice.getItems().addAll(0,1,2,3,4,5,6,7,8,9);
         gridpane.add(rowChoice,1,1);
         Label col = new Label("Column:");
         col.getStyleClass().add("label-white");
         gridpane.add(col, 2,1);
-        ChoiceBox<Integer> colChoice = new ChoiceBox<Integer>();
+        ChoiceBox<Integer> colChoice = new ChoiceBox<>();
         colChoice.getItems().addAll(0,1,2,3,4,5,6,7,8,9);
         gridpane.add(colChoice,3,1);
         Button shootBtn = new Button("Shoot");
         gridpane.add(shootBtn,4,1);
         shootBtn.setOnAction(e -> {
-            if(running)
-                getChoice(rowChoice,colChoice);
+            if(running) {
+                try {
+                    getChoice(rowChoice,colChoice);
+                } catch (FileNotFoundException fileNotFoundException) {
+                    fileNotFoundException.printStackTrace();
+                }
+            }
         });
         gridpane.setAlignment(Pos.CENTER);
 
         return gridpane;
     }
 
-    private void getChoice(ChoiceBox<Integer> rowChoice, ChoiceBox<Integer> colChoice){
+    private void getChoice(ChoiceBox<Integer> rowChoice, ChoiceBox<Integer> colChoice) throws FileNotFoundException {
         int row = rowChoice.getValue();
         int column = colChoice.getValue();
         Cell cell = enemyOcean.getCell(row,column);
@@ -508,7 +529,7 @@ public class BattleshipGame extends Application{
         HBox columns = new HBox();
         for(int c =0; c<10; c++){
             Rectangle rec = new Rectangle(30,30);
-            rec.setFill(Color.ALICEBLUE);
+            rec.setFill(Color.TRANSPARENT);
             rec.setStroke(Color.BLACK);
             Text num = new Text(String.valueOf(c));
             StackPane stack = new StackPane();
@@ -518,7 +539,7 @@ public class BattleshipGame extends Application{
         VBox rows = new VBox();
         for(int r=0; r<11; r++){
             Rectangle rec = new Rectangle(30,30);
-            rec.setFill(Color.ALICEBLUE);
+            rec.setFill(Color.TRANSPARENT);
             rec.setStroke(Color.BLACK);
             if(r == 0) {
                 rows.getChildren().add(rec);

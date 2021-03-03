@@ -19,7 +19,7 @@ public class Ocean extends Parent {
     int shipShot;
     int points;
     private VBox rows = new VBox();
-    public boolean enemy = false;
+    public boolean enemy ;
 
     //constructor
     public Ocean(boolean enemy, EventHandler<? super MouseEvent> handler) {
@@ -111,8 +111,8 @@ public class Ocean extends Parent {
             for(int j =0; j<10; j++){
                 Cell cell =getCell(i,j);
                 if(cell.ship != null ){
-                    cell.setFill(Color.BLUE);
-                    cell.setStroke(Color.AQUAMARINE);
+                    cell.setFill(Color.ALICEBLUE);
+                    cell.setStroke(Color.BLACK);
                 }
             }
         }
@@ -202,7 +202,8 @@ public class Ocean extends Parent {
                 if(getCell(i,j).ship != null)
                     getCell(i,j).ship = null;
                 getCell(i,j).wasShot = false;
-                getCell(i,j).setFill(Color.ALICEBLUE);
+                //getCell(i,j).setFill(Color.ALICEBLUE);
+                getCell(i,j).setFill(Color.TRANSPARENT);
                 getCell(i,j).setStroke(Color.BLACK);
             }
         }
@@ -213,7 +214,7 @@ public class Ocean extends Parent {
         public boolean wasShot ;
         public Ship ship;
 
-        private Ocean ocean;
+        Ocean ocean;
 
         public Cell(int row, int column, Ocean ocean) {
             super(30, 30);
@@ -222,7 +223,8 @@ public class Ocean extends Parent {
             this.ocean = ocean;
             wasShot = false;
             ship = null;
-            setFill(Color.ALICEBLUE);
+            //setFill(Color.ALICEBLUE);
+            setFill(Color.TRANSPARENT);
             setStroke(Color.BLACK);
         }
 

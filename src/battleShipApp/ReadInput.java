@@ -23,7 +23,7 @@ public class ReadInput {
             reader = new BufferedReader(new FileReader(file));
             String line;
             while ((line = reader.readLine()) != null) {
-                if(i==5) throw new InvalidCountException(" more than 5 ships");
+                if(i==5) throw new InvalidCountException("More than 5 ships");
                 int [] input = parseLineToIntArray(line);
                 placements[i++] = input;
             }

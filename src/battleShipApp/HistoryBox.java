@@ -3,9 +3,12 @@ package battleShipApp;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.*;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.LinkedList;
 
 
@@ -25,17 +28,25 @@ public class HistoryBox {
         window.setTitle(title);
         window.setMinHeight(125);
         window.setMinWidth(250);
+        FileInputStream input = null;
+        try {
+            input = new FileInputStream("medialab/images/icon.jpeg");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        Image image = new Image(input);
+        window.getIcons().add(image);
 
         Label label = new Label();
         label.setText(message);
 
-        String pHistory = "";
+        StringBuilder pHistory = new StringBuilder();
         for (String str : historyList) {
-            System.out.print(str + "\n");
-            pHistory = pHistory + str +"\n";
+            //System.out.print(str + "\n");
+            pHistory.append(str).append("\n");
         }
         Label label2 = new Label();
-        label2.setText(pHistory);
+        label2.setText(pHistory.toString());
 
 
         Button ok = new Button("Ok");

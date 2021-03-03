@@ -4,14 +4,13 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.*;
 import javafx.scene.control.TextArea;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Iterator;
 
 
@@ -57,7 +56,7 @@ public class PopupBox {
         }
     }
 
-    private boolean prepareGame( boolean player){
+    private boolean prepareGame( boolean player) throws FileNotFoundException {
         placed = false;
         try{
             if(player){
@@ -75,13 +74,13 @@ public class PopupBox {
         catch(Exception m){
             AlertBox.display("Error", m.getMessage() + "\n Please correct the placement");
             System.out.println(m);
-            System.out.println("The game didnt start");
+            System.out.println("The game didn't start");
         }
         return placed ;
     }
 
 
-    public  boolean display(String title, String message){
+    public  boolean display(String title, String message) throws FileNotFoundException {
         loaded = false;
         Stage window = new Stage();
 
@@ -89,6 +88,9 @@ public class PopupBox {
         window.setTitle(title);
         window.setMinHeight(400);
         window.setMinWidth(400);
+        FileInputStream input = new FileInputStream("medialab/images/icon.jpeg");
+        Image image = new Image(input);
+        window.getIcons().add(image);
 
         Label label = new Label();
         label.setText(message);
@@ -126,7 +128,11 @@ public class PopupBox {
             saveToFile(playerTextArea, "medialab/player_SCENARIO-ID.txt");
             if(running)
                 playerOcean.restartOcean();
-            player_check = prepareGame(true);
+            try {
+                player_check = prepareGame(true);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
             if(player_check){
                 playerTextArea.setEditable(false); //cant change the scenario once selected
                 btnPlayer.setDisable(true);
@@ -139,7 +145,11 @@ public class PopupBox {
             saveToFile(enemyTextArea,"medialab/enemy_SCENARIO-ID.txt");
             if(running)
                 enemyOcean.restartOcean();
-            enemy_check = prepareGame(false);
+            try {
+                enemy_check = prepareGame(false);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
             if(enemy_check){
                 enemyTextArea.setEditable(false);
                 btnEnemy.setDisable(true);
