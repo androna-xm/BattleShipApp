@@ -62,19 +62,19 @@ public class Ocean extends Parent {
 
     private void checkNeighbors(Ship ship, int r, int c) throws AdjacentTilesException {
         //above
-        if(r>0 && getCell(r-1,c).ship!= null &&  getCell(r-1,c).ship.getType()!=ship.getType()){
+        if(r>0 && getCell(r-1,c).ship!= null && !getCell(r - 1, c).ship.getType().equals(ship.getType())){
             throw new AdjacentTilesException(ship.getType()+" has neighbor ship above");
         }
         //below
-        if (r < 9 && getCell(r + 1,c).ship != null  && getCell(r + 1,c).ship.getType()!=ship.getType()) {
+        if (r < 9 && getCell(r + 1,c).ship != null  && !getCell(r + 1, c).ship.getType().equals(ship.getType())) {
             throw new AdjacentTilesException(ship.getType()+" has neighbor ship below");
         }
         //left
-        if (c > 0 && getCell(r,c - 1).ship != null && getCell(r,c - 1).ship.getType()!=ship.getType()) {
+        if (c > 0 && getCell(r,c - 1).ship != null && !getCell(r, c - 1).ship.getType().equals(ship.getType())) {
             throw new AdjacentTilesException(ship.getType()+" has neighbor ship left in row "+ r + "and in column" + c);
         }
         //right
-        if (c < 9 && getCell(r,c + 1).ship != null && getCell(r,c + 1).ship.getType()!=ship.getType()) {
+        if (c < 9 && getCell(r,c + 1).ship != null && !getCell(r, c + 1).ship.getType().equals(ship.getType())) {
             throw new AdjacentTilesException(ship.getType()+" has neighbor ship right");
         }
     }
